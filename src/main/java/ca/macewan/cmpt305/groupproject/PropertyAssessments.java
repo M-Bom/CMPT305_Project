@@ -4,10 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PropertyAssessments {
@@ -169,6 +166,11 @@ public class PropertyAssessments {
         }
         // Return the assessedValues list
         return assessedValues;
+    }
+
+    public List<Neighbourhood> getAllNeighbourhoods() {
+        Set<Neighbourhood> neighbourhoods = this.data.stream().map(PropertyAssessment::getNeighbourhood).collect(Collectors.toSet());
+        return new ArrayList<>(neighbourhoods);
     }
 
     /**
