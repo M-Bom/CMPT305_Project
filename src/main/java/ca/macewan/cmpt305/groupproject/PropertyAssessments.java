@@ -173,6 +173,12 @@ public class PropertyAssessments {
         return new ArrayList<>(neighbourhoods);
     }
 
+    public List<Address> getAllAddresses() {
+        List<Address> addresses =  this.data.stream().map(PropertyAssessment::getAddress).collect(Collectors.toList());
+        //System.out.print(addresses);
+        return addresses;
+    }
+
     /**
      * From the account info obtains the three possible assessment classes
      *

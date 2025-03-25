@@ -16,6 +16,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class HelloApplication extends Application {
@@ -27,9 +29,6 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException {
         //FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         //Scene scene = new Scene(fxmlLoader.load(), 1280, 960);
-        // Choice box of all possible neighbourhoods with wards
-        /*ChoiceBox<Neighbourhood> neighbourhoodFilter = new ChoiceBox<>();
-        neighbourhoodFilter.getItems().addAll(neighbourhoods);*/
         BorderPane bp = new BorderPane();
         bp.setPadding(new Insets(10,10,10,10));
 
@@ -47,8 +46,6 @@ public class HelloApplication extends Application {
         //layout.setPadding(new Insets(20,20,20,20));
         //layout.getChildren().addAll(neighbourhoodFilter);
 
-
-
         stage.setTitle("Map Search");
         stage.setScene(scene);
         stage.show();
@@ -57,7 +54,8 @@ public class HelloApplication extends Application {
     VBox setVB1(VBox vb) throws IOException {
         String csvFileName = "src/main/resources/Property_Assessment_Data_2024.csv";
         PropertyAssessments propertyAssessments = new PropertyAssessments(csvFileName);
-        //List<Neighbourhood> neighbourhoods = propertyAssessments.getAllNeighbourhoods();
+        List<Neighbourhood> neighbourhoods = propertyAssessments.getAllNeighbourhoods();
+        List<Address> addresses = propertyAssessments.getAllAddresses();
 
         vb.setPrefWidth(700);
 
@@ -76,13 +74,24 @@ public class HelloApplication extends Application {
         value.setMinWidth(250);
         value.setCellValueFactory(new PropertyValueFactory<>("assessmentClass"));
 
-
         vb.setVgrow(table, Priority.ALWAYS);
 
         table.getColumns().setAll(neighbourhood, address, value);
         table.setItems(data);
 
-        vb.getChildren().add(table);
+        // Choice box of all possible neighbourhoods with wards
+        ChoiceBox<Neighbourhood> neighbourhoodFilter = new ChoiceBox<>();
+        neighbourhoodFilter.getItems().addAll(neighbourhoods);
+
+        // Choice box of all possible addresses (NOT able to display for some reason that is unknown)
+        ChoiceBox<Address> addressFilter = new ChoiceBox<>();
+        addressFilter.getItems().addAll(addresses);
+
+        // Choice box for price range filter
+        ChoiceBox<String> priceFilter = new ChoiceBox<>();
+        priceFilter.getItems().addAll("0 - 99,999","100,000 - 499,999", "500,000 - 999,999", "1,000,000+");
+
+        vb.getChildren().addAll(neighbourhoodFilter, priceFilter, table);
 
         return vb;
     }
