@@ -3,7 +3,7 @@ package ca.macewan.cmpt305.groupproject;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class PropertyAssessmentsController {
     @FXML
     private Label welcomeText;
 

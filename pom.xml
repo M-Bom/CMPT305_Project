@@ -61,7 +61,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                ca.macewan.cmpt305.groupproject/ca.macewan.cmpt305.groupproject.HelloApplication
+                                ca.macewan.cmpt305.groupproject/ca.macewan.cmpt305.groupproject.PropertyAssessmentsApplication
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
