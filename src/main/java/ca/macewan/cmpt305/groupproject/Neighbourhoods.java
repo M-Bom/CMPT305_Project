@@ -7,18 +7,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
-public class Schools {
-    private List<School> schools;
+public class Neighbourhoods {
+    private List<NeighbourhoodCatchment> neighbourhoods;
     private String filePath;
 
-    // Constructor that takes a list of School Objects
-    public Schools(List<School> schools) {this.schools = schools;}
+    public Neighbourhoods(List<NeighbourhoodCatchment> neighbourhoods){this.neighbourhoods = neighbourhoods;}
 
     // Constructor that initialize Schools list from a file
     // Constructor for CSV loading
-    public Schools(String csvFileName) throws IOException {
-        this.schools = new ArrayList<>();
+    public Neighbourhoods(String csvFileName) throws IOException {
+        this.neighbourhoods = new ArrayList<>();
         this.filePath = "src/main/resources/" + csvFileName;
         // Here I will catch if we can load the file so the program doesn't crash
         try {
@@ -41,25 +39,18 @@ public class Schools {
         }
         for (String[] row : data) {
             // Ensure every row has exactly 20 columns by filling missing values
-            row = Arrays.copyOf(row, 20);
+            row = Arrays.copyOf(row, 9);
             for (int i = 0; i < row.length; i++) {
                 if (row[i] == null || row[i].trim().equals("<null>")) {
                     row[i] = ""; // Replace <null> or missing values with empty string
                 }
             }
 
-            String id = row[4];
-            String year = row[0];
-            SchoolName name = new SchoolName(row[5], row[2]);
-            SchoolType schoolType = new SchoolType(row[6], row[7]);
-            Address address = new Address(row[8], null, null);
-
-            String catchmentPolygon = row[19];
+            Neighbourhood neighbourhood = new Neighbourhood(row[6],row[2],row[1]);
+            String catchmentPolygon = row[8];
             Catchment catchment = new Catchment(catchmentPolygon);
 
-
-            School school = new School(id, year, name, schoolType, address,catchment);
-            schools.add(school);
+            neighbourhoods.add(new NeighbourhoodCatchment(neighbourhood,catchment));
 
         }
     }
@@ -109,14 +100,10 @@ public class Schools {
         return Arrays.copyOf(data, index);
     }
 
-    public int getSize(){
-        return schools.size(); // return size of list
-    }
-
-    public School getSchoolByID(String id){
-        for(School school : schools){
-            if(school.getId().equals(id)){
-                return school;
+    public NeighbourhoodCatchment getNeighbourHoodCatchmentByName(String name){
+        for(NeighbourhoodCatchment catchment : neighbourhoods){
+            if(catchment.getNeighbourhood().getNeighbourhoodName().trim().equalsIgnoreCase(name.trim())){
+                return catchment;
             }
         }
         return null;

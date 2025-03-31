@@ -1,17 +1,18 @@
 package ca.macewan.cmpt305.groupproject;
-import java.util.Objects;
 
 public class School implements Comparable<School>{
     private String id;
     private SchoolName name;
     private Address address;
     private SchoolType schoolType;
+    private Catchment catchment;
 
-    public School(String id, String year, SchoolName name, SchoolType schoolType, Address address) {
+    public School(String id, String year, SchoolName name, SchoolType schoolType, Address address, Catchment catchment) {
         this.id = id;
         this.name = name;
         this.schoolType = schoolType;
         this.address = address;
+        this.catchment = catchment;
     }
 
     // get and set methods
@@ -26,6 +27,9 @@ public class School implements Comparable<School>{
     }
     public SchoolType getSchoolType() {
         return schoolType;
+    }
+    public Catchment getCatchment() {
+        return catchment;
     }
 
     @Override
@@ -43,6 +47,12 @@ public class School implements Comparable<School>{
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
 
     @Override
     public int compareTo(School o) {
