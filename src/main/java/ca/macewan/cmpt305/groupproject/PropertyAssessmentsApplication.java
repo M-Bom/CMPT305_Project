@@ -52,10 +52,6 @@ public class PropertyAssessmentsApplication extends Application {
 
         onReset(vb1, residentialFilteredPropertyAssessments);
 
-        //VBox layout = new VBox(10);
-        //layout.setPadding(new Insets(20,20,20,20));
-        //layout.getChildren().addAll(neighbourhoodFilter);
-
         stage.setTitle("Map Search");
         stage.setScene(scene);
         stage.show();
@@ -91,10 +87,6 @@ public class PropertyAssessmentsApplication extends Application {
         ChoiceBox<Neighbourhood> neighbourhoodFilter = new ChoiceBox<>();
         neighbourhoodFilter.getItems().addAll(neighbourhoods);
 
-        // Choice box of all possible addresses (NOT able to display for some reason that is unknown)
-        ChoiceBox<Address> addressFilter = new ChoiceBox<>();
-        addressFilter.getItems().addAll(addresses);
-
         // Choice box for price range filter
         ChoiceBox<String> priceFilter = new ChoiceBox<>();
         priceFilter.getItems().addAll("0 - 99,999","100,000 - 499,999", "500,000 - 999,999", "1,000,000+");
@@ -126,18 +118,29 @@ public class PropertyAssessmentsApplication extends Application {
             @Override
             public void handle(ActionEvent e) {
                 Neighbourhood neighbourhood = neighbourhoodFilter.getValue();
-                String filter1 = neighbourhood.getNeighbourhoodName();
-                System.out.println(filter1);
-                String filter2 = priceFilter.getValue();
-                System.out.println(filter2);
-                if (filter1 != null && filter2 == null) {
-                    PropertyAssessments filteredPropertyAssessments = propertyAssessments.getFilteredData(filter1);
-                    //PropertyAssessments residentialFilteredPropertyAssessments = filteredPropertyAssessments.getFilteredData("Residential");
-                    table.getItems().clear();
-                    table.getItems().addAll(filteredPropertyAssessments.getData());
-                } else if (filter1 != null) {
-                    PropertyAssessments filteredPropertyAssessments1 = propertyAssessments.getFilteredData(filter1);
-                    //PropertyAssessments residentialFilteredPropertyAssessments = filteredPropertyAssessments1.getFilteredData("Residential");
+                if (neighbourhood != null) {
+                    String filter1 = neighbourhood.getNeighbourhoodName();
+                    System.out.println(filter1);
+                    String filter2 = priceFilter.getValue();
+                    System.out.println(filter2);
+                    if (filter1 != null && filter2 == null) {
+                        PropertyAssessments filteredPropertyAssessments = propertyAssessments.getFilteredData(filter1);
+                        table.getItems().clear();
+                        table.getItems().addAll(filteredPropertyAssessments.getData());
+                    } else if (filter1 != null) {
+                        PropertyAssessments filteredPropertyAssessments1 = propertyAssessments.getFilteredData(filter1);
+                        PropertyAssessments filteredPropertyAssessments2 = filteredPropertyAssessments1.getFilteredData(filter2);
+                        table.getItems().clear();
+                        table.getItems().addAll(filteredPropertyAssessments2.getData());
+                    } else if (filter2 != null) {
+                        PropertyAssessments filteredPropertyAssessments1 = propertyAssessments.getFilteredData(filter2);
+                        table.getItems().clear();
+                        table.getItems().addAll(filteredPropertyAssessments1.getData());
+                    }
+                } else {
+                    String filter2 = priceFilter.getValue();
+                    System.out.println(filter2);
+                    PropertyAssessments filteredPropertyAssessments1 = propertyAssessments.getFilteredData(filter2);
                     table.getItems().clear();
                     table.getItems().addAll(filteredPropertyAssessments1.getData());
                 }

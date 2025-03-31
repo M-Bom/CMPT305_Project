@@ -77,7 +77,7 @@ public class PropertyAssessments {
         List<PropertyAssessment> filteredData = this.data.stream()
                 .filter(property -> property.getNeighbourhood().getNeighbourhoodName().equals(filterName.toUpperCase()) ||
                         Arrays.asList(property.getAssessmentClass().getClassNames()).contains(filterName.toUpperCase()) ||
-                        (property.getGarage().equals(filterName.toUpperCase())))
+                        (property.getGarage().equals(filterName.toUpperCase())) || (withinPriceRange(property.getAssessmentClass().getAssessedValue(), filterName.toUpperCase())))
                 .collect(Collectors.toList());
         // Checks if the list is empty and returns null
         if (filteredData.isEmpty()) {
@@ -86,6 +86,16 @@ public class PropertyAssessments {
 
         // Creating new property assessments value using the newly filtered data
         return new PropertyAssessments(filteredData);
+    }
+
+    private boolean withinPriceRange(int assessedValue, String filterName) {
+        return switch (filterName) {
+            case "0 - 99,999" -> assessedValue >= 0 && assessedValue <= 99999;
+            case "100,000 - 499,999" -> assessedValue >= 100000 && assessedValue <= 499999;
+            case "500,000 - 999,999" -> assessedValue >= 500000 && assessedValue <= 999999;
+            case "1,000,000+" -> assessedValue >= 1000000;
+            default -> false;
+        };
     }
 
     /**
