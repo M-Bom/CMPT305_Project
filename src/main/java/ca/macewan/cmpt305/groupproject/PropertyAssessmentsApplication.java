@@ -11,11 +11,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -47,6 +45,9 @@ public class PropertyAssessmentsApplication extends Application {
         vb1 = setVB1(vb1, residentialFilteredPropertyAssessments);
 
         bp.setLeft(vb1);
+
+        StackPane stackPane = Map.createMap();
+        bp.setCenter(stackPane);
 
         onSearch(vb1, residentialFilteredPropertyAssessments);
 
@@ -173,6 +174,6 @@ public class PropertyAssessmentsApplication extends Application {
     }
 
     public static void main(String[] args) {
-        launch();
+        Application.launch();
     }
 }
