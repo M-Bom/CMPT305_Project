@@ -10,7 +10,7 @@ public class MainSchool {
 
         try{
             Schools schools = new Schools(filename);
-            Neighbourhoods neighbourhoods = new Neighbourhoods(filename2);
+            NeighbourhoodCatchments neighbourhoodCatchments = new NeighbourhoodCatchments(filename2);
 
             System.out.println("Enter school id: ");
             String targetId = scanner.nextLine();
@@ -30,7 +30,7 @@ public class MainSchool {
             System.out.println("Enter neighbour Name: ");
             String neighbourId = scanner.nextLine();
             if (!neighbourId.isEmpty()){
-                NeighbourhoodCatchment neighbourhoodCatchment = neighbourhoods.getNeighbourHoodCatchmentByName(neighbourId);
+                NeighbourhoodCatchment neighbourhoodCatchment = neighbourhoodCatchments.getNeighbourHoodCatchmentByName(neighbourId);
 
                 if (neighbourhoodCatchment == null){
                     System.out.println("NO NEIGHBOURHOOD FOUND");

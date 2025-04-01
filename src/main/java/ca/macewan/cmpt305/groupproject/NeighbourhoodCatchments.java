@@ -7,15 +7,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Neighbourhoods {
+public class NeighbourhoodCatchments {
     private List<NeighbourhoodCatchment> neighbourhoods;
     private String filePath;
 
-    public Neighbourhoods(List<NeighbourhoodCatchment> neighbourhoods){this.neighbourhoods = neighbourhoods;}
+    public NeighbourhoodCatchments(List<NeighbourhoodCatchment> neighbourhoods){this.neighbourhoods = neighbourhoods;}
 
     // Constructor that initialize Schools list from a file
     // Constructor for CSV loading
-    public Neighbourhoods(String csvFileName) throws IOException {
+    public NeighbourhoodCatchments(String csvFileName) throws IOException {
         this.neighbourhoods = new ArrayList<>();
         this.filePath = "src/main/resources/" + csvFileName;
         // Here I will catch if we can load the file so the program doesn't crash
