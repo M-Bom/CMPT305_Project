@@ -6,13 +6,15 @@ public class School implements Comparable<School>{
     private Address address;
     private SchoolType schoolType;
     private Catchment catchment;
+    private Location location;
 
-    public School(String id, String year, SchoolName name, SchoolType schoolType, Address address, Catchment catchment) {
+    public School(String id, String year, SchoolName name, SchoolType schoolType, Address address, Catchment catchment, Location location) {
         this.id = id;
         this.name = name;
         this.schoolType = schoolType;
         this.address = address;
         this.catchment = catchment;
+        this.location = location;
     }
 
     // get and set methods
@@ -30,6 +32,9 @@ public class School implements Comparable<School>{
     }
     public Catchment getCatchment() {
         return catchment;
+    }
+    public Location getLocation() {
+        return location;
     }
 
     @Override

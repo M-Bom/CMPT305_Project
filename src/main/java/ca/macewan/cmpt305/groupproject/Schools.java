@@ -1,4 +1,5 @@
 package ca.macewan.cmpt305.groupproject;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -6,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 public class Schools {
@@ -53,12 +55,12 @@ public class Schools {
             SchoolName name = new SchoolName(row[5], row[2]);
             SchoolType schoolType = new SchoolType(row[6], row[7]);
             Address address = new Address(row[8], null, null);
-
+            Location location = new Location(row[14], row[15]);
             String catchmentPolygon = row[19];
             Catchment catchment = new Catchment(catchmentPolygon);
 
 
-            School school = new School(id, year, name, schoolType, address,catchment);
+            School school = new School(id, year, name, schoolType, address,catchment, location);
             schools.add(school);
 
         }
@@ -89,7 +91,10 @@ public class Schools {
             String line;
             while ((line = reader.readLine()) != null) {
                 // Split a line by comma works for simple CSV files
-                String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+                String[] values = line.split(",");
+
+                //for multipolygons, if we end up using catchment then we got to switch to this
+                //String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
 
                 // Check if the array is full
@@ -121,4 +126,17 @@ public class Schools {
         }
         return null;
     }
+
+    public ArrayList<String> getAllCoordinates() {
+        ArrayList<String> coordinates = new ArrayList<>();
+        for (School school : schools) {
+            String latitude = school.getLocation().getLatitude();
+            String longitude = school.getLocation().getLongitude();
+            if (latitude != null && longitude != null && !latitude.isEmpty() && !longitude.isEmpty()) {
+                coordinates.add("(" + latitude + " " + longitude + ")");
+            }
+        }
+        return coordinates;
+    }
+
 }

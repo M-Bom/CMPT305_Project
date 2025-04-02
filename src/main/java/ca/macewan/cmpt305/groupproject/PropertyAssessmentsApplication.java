@@ -105,8 +105,18 @@ public class PropertyAssessmentsApplication extends Application {
         StackPane stackPane = createMap();
         bp.setCenter(stackPane);
         //create address search within map
-        setupTextField();
-        stackPane.getChildren().add(searchBox);
+        //setupTextField();
+        //stackPane.getChildren().add(searchBox);
+        //show schools button
+        Button schoolButton = new Button("School");
+        StackPane.setMargin(schoolButton, new Insets(0, 0, 0, 10) );
+        schoolButton.setStyle("-fx-background-color: #649aef; -fx-background-size: 20px 40px");
+        stackPane.getChildren().add(schoolButton);
+        stackPane.setAlignment(schoolButton, Pos.TOP_LEFT);
+        createLocatorTask();
+        schoolButton.setOnAction(event -> {
+            schoolButtonUsage();
+        });
 
         onSearch(vb1, residentialFilteredPropertyAssessments, neighbourhoodCatchments);
 
@@ -251,6 +261,7 @@ public class PropertyAssessmentsApplication extends Application {
         }
     }
 
+    // no longer using text box search
         private static void setupTextField() {
         searchBox = new TextField();
         searchBox.setMaxWidth(300);
@@ -267,6 +278,10 @@ public class PropertyAssessmentsApplication extends Application {
         });
     }
 
+    private static void schoolButtonUsage(){
+        String schools;
+    }
+
     public static void createLocatorTask() {
         locatorTask = new LocatorTask("https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer");
         geocodeParameters = new GeocodeParameters();
@@ -275,10 +290,10 @@ public class PropertyAssessmentsApplication extends Application {
         geocodeParameters.setOutputSpatialReference(mapView.getSpatialReference());
     }
 
-    // this is not working other than get edmonton bounds
+    // this is not working
     private static void performGeocode(String address, String type) {
         if(address.equalsIgnoreCase("Edmonton")){
-            getEdmontonBounds();
+            //getEdmontonBounds();
             return;
         }
         address = address + " Edmonton";
@@ -320,27 +335,26 @@ public class PropertyAssessmentsApplication extends Application {
         }
     }
 
-    private static void getEdmontonBounds() {
+    private static void getEdmontonBounds(String multiPolygon) {
         //List<List<String>> edmontonCoord = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/City_of_Edmonton_-_Corporate_Boundary__current__20250325.csv"))) {
-            String line;
-            //skip header
-            reader.readLine();
-            line = reader.readLine();
-            if (line == null) {
-                throw new RuntimeException("CSV file does not contain Edmonton boundary");
-            }
-            String edmontonBoundary = line.split(",")[0];
-            if (!edmontonBoundary.startsWith("\"MULTIPOLYGON")){
-                throw new RuntimeException("Invalid format, CSV file does not contain Edmonton boundary");
-            }
-
+//        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/City_of_Edmonton_-_Corporate_Boundary__current__20250325.csv"))) {
+//            String line;
+//            //skip header
+//            reader.readLine();
+//            line = reader.readLine();
+//            if (line == null) {
+//                throw new RuntimeException("CSV file does not contain Edmonton boundary");
+//            }
+//            String edmontonBoundary = line.split(",")[0];
+//            if (!edmontonBoundary.startsWith("\"MULTIPOLYGON")){
+//                throw new RuntimeException("Invalid format, CSV file does not contain Edmonton boundary");
+//            }
             SimpleLineSymbol simpleLineSymbol1 = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.BLACK, 2);
             PointCollection pointCollection = new PointCollection(SpatialReference.create(4326));
 
             //pattern matcher to separate the longitude and latitude from the multipolygon string
             Pattern pattern = Pattern.compile("(-?[0-9]+\\.[0-9]+)\\s([0-9]+\\.[0-9]+)");
-            Matcher matcher = pattern.matcher(line);
+            Matcher matcher = pattern.matcher(multiPolygon);
             // Find and parse the coordinates
             while (matcher.find()) {
                 String longitude = matcher.group(1); // x-coordinate
@@ -355,9 +369,9 @@ public class PropertyAssessmentsApplication extends Application {
             graphicsOverlay.getGraphics().add(polygonGraphic);
 
 
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading Edmonton boundary", e);
-        }
+//        } catch (IOException e) {
+//            throw new RuntimeException("Error reading Edmonton boundary", e);
+//        }
     }
 
 //map functions end
