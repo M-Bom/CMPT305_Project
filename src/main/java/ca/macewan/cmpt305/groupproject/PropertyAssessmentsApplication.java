@@ -63,6 +63,7 @@ public class PropertyAssessmentsApplication extends Application {
     private static LocatorTask locatorTask;
 
 
+
     @Override
     public void start(Stage stage) throws IOException {
         //FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
@@ -81,7 +82,7 @@ public class PropertyAssessmentsApplication extends Application {
         BorderPane bp = new BorderPane();
         bp.setPadding(new Insets(10,10,10,10));
 
-        Scene scene = new Scene(bp, 1800, 960);//new Scene(fxmlLoader.load(), win_width, win_height);
+        Scene scene = new Scene(bp, 1200, 460);//new Scene(fxmlLoader.load(), win_width, win_height);
         stage.setTitle("Map search");
 
         VBox vb1 = new VBox();
@@ -89,6 +90,11 @@ public class PropertyAssessmentsApplication extends Application {
         vb1 = setVB1(vb1, residentialFilteredPropertyAssessments);
 
         bp.setLeft(vb1);
+
+
+
+        VBox chatbotPane = createChatbot();
+        bp.setRight(chatbotPane);
 
         //set map in right side of application
         StackPane stackPane = createMap();
@@ -217,6 +223,43 @@ public class PropertyAssessmentsApplication extends Application {
         return vb;
     }
 
+    private VBox createChatbot() {
+
+        VBox chatbotContainer = new VBox(10);
+        chatbotContainer.setPadding(new Insets(10));
+        chatbotContainer.setPrefWidth(300);
+        chatbotContainer.setAlignment(Pos.TOP_RIGHT);
+
+        Label chatbotLabel = new Label("Chatbot");
+        chatbotLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
+        TextArea chatHistory = new TextArea();
+        chatHistory.setEditable(false);
+        chatHistory.setWrapText(true);
+        chatHistory.setPrefHeight(400);
+
+        TextField userInput = new TextField();
+        userInput.setPromptText("Type a message...");
+
+        Button sendButton = new Button("Send");
+        sendButton.setOnAction(event -> {
+            String userText = userInput.getText().trim();
+            if (!userText.isEmpty()) {
+                chatHistory.appendText("You: " + userText + "\n");
+                userInput.clear();
+                String botResponse = getChatbotResponse(userText);
+                chatHistory.appendText("Bot: " + botResponse + "\n");
+            }
+        });
+
+        HBox inputContainer = new HBox(5, userInput, sendButton);
+        inputContainer.setAlignment(Pos.CENTER);
+
+        chatbotContainer.getChildren().addAll(chatbotLabel, chatHistory, inputContainer);
+        return chatbotContainer;
+    }
+
+
     void onSearch(VBox vb, PropertyAssessments propertyAssessments, NeighbourhoodCatchments neighbourhoodCatchments) {
         // retrieve neighbourhoodFilter from vertical box
         ChoiceBox<Neighbourhood> neighbourhoodFilter = (ChoiceBox<Neighbourhood>) ((HBox) vb.getChildren().getFirst()).getChildren().get(0);
@@ -269,6 +312,17 @@ public class PropertyAssessmentsApplication extends Application {
         search.setOnAction(event);
     }
 
+    private String getChatbotResponse(String userMessage) {
+        // Simple responses for demonstration
+        if (userMessage.equalsIgnoreCase("hello")) {
+            return "Hi there! How can I help you?";
+        } else if (userMessage.equalsIgnoreCase("bye")) {
+            return "Goodbye! Have a great day!";
+        } else {
+            return "I'm not sure how to respond to that.";
+        }
+    }
+
 //map functions start
 
     public StackPane createMap() throws FileNotFoundException {
@@ -298,7 +352,7 @@ public class PropertyAssessmentsApplication extends Application {
     }
 
     // no longer using text box search
-        private void setupTextField() {
+    private void setupTextField() {
         searchBox = new TextField();
         searchBox.setMaxWidth(300);
         searchBox.setPromptText("Search");
@@ -409,24 +463,24 @@ public class PropertyAssessmentsApplication extends Application {
 //            if (!edmontonBoundary.startsWith("\"MULTIPOLYGON")){
 //                throw new RuntimeException("Invalid format, CSV file does not contain Edmonton boundary");
 //            }
-            SimpleLineSymbol simpleLineSymbol1 = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.BLACK, 2);
-            PointCollection pointCollection = new PointCollection(SpatialReference.create(4326));
+        SimpleLineSymbol simpleLineSymbol1 = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.BLACK, 2);
+        PointCollection pointCollection = new PointCollection(SpatialReference.create(4326));
 
-            //pattern matcher to separate the longitude and latitude from the multipolygon string
-            Pattern pattern = Pattern.compile("(-?[0-9]+\\.[0-9]+)\\s([0-9]+\\.[0-9]+)");
-            Matcher matcher = pattern.matcher(multiPolygon);
-            // Find and parse the coordinates
-            while (matcher.find()) {
-                String longitude = matcher.group(1); // x-coordinate
-                String latitude = matcher.group(2); // y-coordinate
-                pointCollection.add(new Point(Double.parseDouble(longitude), Double.parseDouble(latitude)));
-                //System.out.println(longitude);
-            }
+        //pattern matcher to separate the longitude and latitude from the multipolygon string
+        Pattern pattern = Pattern.compile("(-?[0-9]+\\.[0-9]+)\\s([0-9]+\\.[0-9]+)");
+        Matcher matcher = pattern.matcher(multiPolygon);
+        // Find and parse the coordinates
+        while (matcher.find()) {
+            String longitude = matcher.group(1); // x-coordinate
+            String latitude = matcher.group(2); // y-coordinate
+            pointCollection.add(new Point(Double.parseDouble(longitude), Double.parseDouble(latitude)));
+            //System.out.println(longitude);
+        }
 
-            SimpleFillSymbol simpleFillSymbol = new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, Color.web("#32A4A8", .8), simpleLineSymbol1);
-            Polygon polygon = new Polygon(pointCollection);
-            Graphic polygonGraphic = new Graphic(polygon, simpleFillSymbol);
-            graphicsOverlay.getGraphics().add(polygonGraphic);
+        SimpleFillSymbol simpleFillSymbol = new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, Color.web("#32A4A8", .8), simpleLineSymbol1);
+        Polygon polygon = new Polygon(pointCollection);
+        Graphic polygonGraphic = new Graphic(polygon, simpleFillSymbol);
+        graphicsOverlay.getGraphics().add(polygonGraphic);
 
 
 //        } catch (IOException e) {

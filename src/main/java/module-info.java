@@ -1,4 +1,4 @@
-module ca.macewan.cmpt305.groupproject {
+module ca.macewan.cmpt.groupproject {
     requires java.desktop;
     requires com.esri.arcgisruntime;
     requires javafx.fxml;
