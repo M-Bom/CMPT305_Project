@@ -77,9 +77,15 @@ public class PropertyAssessmentsApplication extends Application {
         //FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         //Scene scene = new Scene(fxmlLoader.load(), 1280, 960);
 
-        String csvFileName = "src/main/resources/Property_Assessment_Data_2024.csv";
-        PropertyAssessments propertyAssessments = new PropertyAssessments(csvFileName);
+        String csvFileName1 = "src/main/resources/Property_Assessment_Data_2024.csv";
+        PropertyAssessments propertyAssessments = new PropertyAssessments(csvFileName1);
         PropertyAssessments residentialFilteredPropertyAssessments = propertyAssessments.getFilteredData("Residential");
+
+        //String csvFileName2 = "src/main/resources/Edmonton_Public_School_Board.csv";
+        //Schools schools = new Schools(csvFileName2);
+
+        String csvFileName3 = "Edmonton_Neighbourhoods.csv";
+        NeighbourhoodCatchments neighbourhoodCatchments = new NeighbourhoodCatchments(csvFileName3);
 
         BorderPane bp = new BorderPane();
         bp.setPadding(new Insets(10,10,10,10));
@@ -100,8 +106,7 @@ public class PropertyAssessmentsApplication extends Application {
         setupTextField();
         stackPane.getChildren().add(searchBox);
 
-
-        onSearch(vb1, residentialFilteredPropertyAssessments);
+        onSearch(vb1, residentialFilteredPropertyAssessments, neighbourhoodCatchments);
 
         onReset(vb1, residentialFilteredPropertyAssessments);
 
@@ -156,7 +161,7 @@ public class PropertyAssessmentsApplication extends Application {
         return vb;
     }
 
-    void onSearch(VBox vb, PropertyAssessments propertyAssessments) {
+    void onSearch(VBox vb, PropertyAssessments propertyAssessments, NeighbourhoodCatchments neighbourhoodCatchments) {
         // retrieve neighbourhoodFilter from vertical box
         ChoiceBox<Neighbourhood> neighbourhoodFilter = (ChoiceBox<Neighbourhood>) ((HBox) vb.getChildren().getFirst()).getChildren().get(0);
 
@@ -178,11 +183,17 @@ public class PropertyAssessmentsApplication extends Application {
                     System.out.println(filter2);
                     if (filter1 != null && filter2 == null) {
                         PropertyAssessments filteredPropertyAssessments = propertyAssessments.getFilteredData(filter1);
+                        NeighbourhoodCatchment neighbourhoodCatchment = neighbourhoodCatchments.getNeighbourHoodCatchmentByName(filter1);
+                        Catchment neighbourhoodPolygon = neighbourhoodCatchment.getCatchment();
+                        System.out.println(neighbourhoodPolygon);
                         table.getItems().clear();
                         table.getItems().addAll(filteredPropertyAssessments.getData());
                     } else if (filter1 != null) {
                         PropertyAssessments filteredPropertyAssessments1 = propertyAssessments.getFilteredData(filter1);
                         PropertyAssessments filteredPropertyAssessments2 = filteredPropertyAssessments1.getFilteredData(filter2);
+                        NeighbourhoodCatchment neighbourhoodCatchment = neighbourhoodCatchments.getNeighbourHoodCatchmentByName(filter1);
+                        Catchment neighbourhoodPolygon = neighbourhoodCatchment.getCatchment();
+                        System.out.println(neighbourhoodPolygon);
                         table.getItems().clear();
                         table.getItems().addAll(filteredPropertyAssessments2.getData());
                     } else if (filter2 != null) {
