@@ -28,6 +28,7 @@ import com.esri.arcgisruntime.tasks.geocode.GeocodeResult;
 import com.esri.arcgisruntime.tasks.geocode.LocatorTask;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Alert;
@@ -60,10 +61,10 @@ public class Map extends Application {
         stage.setHeight(600);
         stage.show();
 
-        StackPane stackPane = createMap();
-        Scene scene = new Scene(stackPane, 800, 600);
+        //StackPane stackPane = createMap();
+        //Scene scene = new Scene(stackPane, 800, 600);
         //Scene scene = createMap(); //new Scene(stackPane, 800, 600);
-        stage.setScene(scene);
+        //stage.setScene(scene);
 
         //arcgis key
 //        ArcGISRuntimeEnvironment.setApiKey("AAPTxy8BH1VEsoebNVZXo8HurLGkiLZYE4xEJO1UZcClXcJCvJFDBTEnVkdydmje5VEOivd1rG98ST-5NOgSDb4ULR80I2k4qyh-Ju3VXLPL1alR0PgRQxs_GcQL1XOv7mxv92GLE6LdX9MSqZpo60rrroLJfjqlxqWVrBoWspVzYHHwbQBkzKUfPniuInAGUuoCMWHB4fmQwz8BwJuJbNjmw3ivpFzpb_MqSQcnC4S5Vpg.AT1_s86nj1rq");
@@ -142,21 +143,21 @@ public class Map extends Application {
         }
     }
 
-    public static StackPane createMap(){
-        StackPane stackPane = new StackPane();
-        //arcgis key
-        ArcGISRuntimeEnvironment.setApiKey("AAPTxy8BH1VEsoebNVZXo8HurLGkiLZYE4xEJO1UZcClXcJCvJFDBTEnVkdydmje5VEOivd1rG98ST-5NOgSDb4ULR80I2k4qyh-Ju3VXLPL1alR0PgRQxs_GcQL1XOv7mxv92GLE6LdX9MSqZpo60rrroLJfjqlxqWVrBoWspVzYHHwbQBkzKUfPniuInAGUuoCMWHB4fmQwz8BwJuJbNjmw3ivpFzpb_MqSQcnC4S5Vpg.AT1_s86nj1rq");
-
-        mapView = new MapView();
-        stackPane.getChildren().add(mapView);
-        //set to topographic map for basemap to be able to see plain map
-        ArcGISMap map = new ArcGISMap(BasemapStyle.ARCGIS_TOPOGRAPHIC);
-        mapView.setMap(map);
-        //set viewpoint to edmonton coordinates
-        mapView.setViewpoint(new Viewpoint(53.5461, -113.4937, 360000));
-        graphicsOverlay = new GraphicsOverlay();
-        mapView.getGraphicsOverlays().add(graphicsOverlay);
-        graphicsOverlay.getGraphics().clear();
+//    public static StackPane createMap(){
+//        StackPane stackPane = new StackPane();
+//        //arcgis key
+//        ArcGISRuntimeEnvironment.setApiKey("AAPTxy8BH1VEsoebNVZXo8HurLGkiLZYE4xEJO1UZcClXcJCvJFDBTEnVkdydmje5VEOivd1rG98ST-5NOgSDb4ULR80I2k4qyh-Ju3VXLPL1alR0PgRQxs_GcQL1XOv7mxv92GLE6LdX9MSqZpo60rrroLJfjqlxqWVrBoWspVzYHHwbQBkzKUfPniuInAGUuoCMWHB4fmQwz8BwJuJbNjmw3ivpFzpb_MqSQcnC4S5Vpg.AT1_s86nj1rq");
+//
+//        mapView = new MapView();
+//        stackPane.getChildren().add(mapView);
+//        //set to topographic map for basemap to be able to see plain map
+//        ArcGISMap map = new ArcGISMap(BasemapStyle.ARCGIS_TOPOGRAPHIC);
+//        mapView.setMap(map);
+//        //set viewpoint to edmonton coordinates
+//        mapView.setViewpoint(new Viewpoint(53.5461, -113.4937, 360000));
+//        graphicsOverlay = new GraphicsOverlay();
+//        mapView.getGraphicsOverlays().add(graphicsOverlay);
+//        graphicsOverlay.getGraphics().clear();
 
 //        //address search
 //        setupTextField();
@@ -188,8 +189,8 @@ public class Map extends Application {
 //            }
 //        }
 
-        return stackPane;
-    }
+//          return stackPane;
+//    }
 
     private static void setupTextField() {
         searchBox = new TextField();
@@ -197,7 +198,7 @@ public class Map extends Application {
         searchBox.setPromptText("Search");
     }
 
-    private static void createLocatorTask() {
+    public static void createLocatorTask() {
         locatorTask = new LocatorTask("https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer");
         geocodeParameters = new GeocodeParameters();
         geocodeParameters.getResultAttributeNames().add("*");
@@ -205,7 +206,7 @@ public class Map extends Application {
         geocodeParameters.setOutputSpatialReference(mapView.getSpatialReference());
     }
 
-    private static void performGeocode(String address, String type) {
+    public static void performGeocode(String address, String type) {
         if(address.equalsIgnoreCase("Edmonton")){
             getEdmontonBounds();
             return;
