@@ -92,7 +92,6 @@ public class PropertyAssessmentsApplication extends Application {
         bp.setLeft(vb1);
 
 
-
         VBox chatbotPane = createChatbot();
         bp.setRight(chatbotPane);
 
@@ -102,63 +101,7 @@ public class PropertyAssessmentsApplication extends Application {
         //create address search within map
         //setupTextField();
         //stackPane.getChildren().add(searchBox);
-
-        //create schools button
-        Button schoolButton = new Button("Elementary School");
-        StackPane.setMargin(schoolButton, new Insets(0, 0, 0, 10) );
-        schoolButton.setStyle("-fx-background-color: #649aef; -fx-background-size: 20px 40px");
-        stackPane.getChildren().add(schoolButton);
-        stackPane.setAlignment(schoolButton, Pos.TOP_LEFT);
-        //createLocatorTask();
-            schoolButton.setOnAction(event -> {
-                try {
-                    elemSchoolButtonUsage();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-
-        Button highSchoolButton = new Button("High School");
-        StackPane.setMargin(highSchoolButton, new Insets(60, 0, 0, 10) );
-        highSchoolButton.setStyle("-fx-background-color: #f6de71; -fx-background-size: 20px 50px");
-        stackPane.getChildren().add(highSchoolButton);
-        stackPane.setAlignment(highSchoolButton, Pos.TOP_LEFT);
-        createLocatorTask();
-        highSchoolButton.setOnAction(event -> {
-            try {
-                highSchoolButtonusage();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        Button jrSchoolButton = new Button("Jr. High School");
-        StackPane.setMargin(jrSchoolButton, new Insets(30, 0, 0, 10) );
-        jrSchoolButton.setStyle("-fx-background-color: #f3914d; -fx-background-size: 20px 40px");
-        stackPane.getChildren().add(jrSchoolButton);
-        stackPane.setAlignment(jrSchoolButton, Pos.TOP_LEFT);
-        createLocatorTask();
-        jrSchoolButton.setOnAction(event -> {
-            try {
-                jrSchoolButtonUsage();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        Button parksButton = new Button("parks");
-        StackPane.setMargin(parksButton, new Insets(90, 0, 0, 10) );
-        parksButton.setStyle("-fx-background-color: #7cf34d; -fx-background-size: 20px 40px");
-        stackPane.getChildren().add(parksButton);
-        stackPane.setAlignment(parksButton, Pos.TOP_LEFT);
-        createLocatorTask();
-        parksButton.setOnAction(event -> {
-            try {
-                parksButtonUsage();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        createButtons(stackPane);
 
         onSearch(vb1, residentialFilteredPropertyAssessments, neighbourhoodCatchments);
 
@@ -368,6 +311,65 @@ public class PropertyAssessmentsApplication extends Application {
         });
     }
 
+    private void createButtons(StackPane stackPane){
+        //create schools button
+        Button schoolButton = new Button("Elementary School");
+        StackPane.setMargin(schoolButton, new Insets(0, 0, 0, 10) );
+        schoolButton.setStyle("-fx-background-color: #649aef; -fx-background-size: 20px 40px");
+        stackPane.getChildren().add(schoolButton);
+        stackPane.setAlignment(schoolButton, Pos.TOP_LEFT);
+        //createLocatorTask();
+        schoolButton.setOnAction(event -> {
+            try {
+                elemSchoolButtonUsage();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        Button highSchoolButton = new Button("High School");
+        StackPane.setMargin(highSchoolButton, new Insets(60, 0, 0, 10) );
+        highSchoolButton.setStyle("-fx-background-color: #f6de71; -fx-background-size: 20px 50px");
+        stackPane.getChildren().add(highSchoolButton);
+        stackPane.setAlignment(highSchoolButton, Pos.TOP_LEFT);
+        createLocatorTask();
+        highSchoolButton.setOnAction(event -> {
+            try {
+                highSchoolButtonusage();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        Button jrSchoolButton = new Button("Jr. High School");
+        StackPane.setMargin(jrSchoolButton, new Insets(30, 0, 0, 10) );
+        jrSchoolButton.setStyle("-fx-background-color: #f3914d; -fx-background-size: 20px 40px");
+        stackPane.getChildren().add(jrSchoolButton);
+        stackPane.setAlignment(jrSchoolButton, Pos.TOP_LEFT);
+        createLocatorTask();
+        jrSchoolButton.setOnAction(event -> {
+            try {
+                jrSchoolButtonUsage();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        Button parksButton = new Button("parks");
+        StackPane.setMargin(parksButton, new Insets(90, 0, 0, 10) );
+        parksButton.setStyle("-fx-background-color: #7cf34d; -fx-background-size: 20px 40px");
+        stackPane.getChildren().add(parksButton);
+        stackPane.setAlignment(parksButton, Pos.TOP_LEFT);
+        createLocatorTask();
+        parksButton.setOnAction(event -> {
+            try {
+                parksButtonUsage();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
     private void elemSchoolButtonUsage() throws IOException {
         //Put instance for elementary schools here!!!!
         Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv");// replace me
@@ -396,6 +398,7 @@ public class PropertyAssessmentsApplication extends Application {
         getPointPlacement(parks, "park");
     }
 
+    //this is not working
     public void createLocatorTask() {
         locatorTask = new LocatorTask("https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer");
         geocodeParameters = new GeocodeParameters();
