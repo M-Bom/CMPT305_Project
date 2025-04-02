@@ -270,7 +270,7 @@ public class PropertyAssessmentsApplication extends Application {
 
     private static void schoolButtonUsage(){
         System.out.println(" in School Button usage");
-        String schools = "-113.604686955 53.5163428888, -113.434494524 53.5397222576";
+        String schools = Schools.getAllCoordinates();
         getPointPlacement(schools);
     }
 
