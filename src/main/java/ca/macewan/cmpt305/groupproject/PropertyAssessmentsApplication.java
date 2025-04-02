@@ -10,7 +10,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
@@ -22,10 +21,8 @@ import java.util.List;
 //imports for map
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import com.esri.arcgisruntime.geometry.*;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
@@ -44,18 +41,10 @@ import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
 import com.esri.arcgisruntime.tasks.geocode.GeocodeParameters;
 import com.esri.arcgisruntime.tasks.geocode.GeocodeResult;
 import com.esri.arcgisruntime.tasks.geocode.LocatorTask;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
-
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -115,7 +104,11 @@ public class PropertyAssessmentsApplication extends Application {
         stackPane.setAlignment(schoolButton, Pos.TOP_LEFT);
         createLocatorTask();
         schoolButton.setOnAction(event -> {
-            schoolButtonUsage();
+            try {
+                schoolButtonUsage();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         onSearch(vb1, residentialFilteredPropertyAssessments, neighbourhoodCatchments);
@@ -157,7 +150,7 @@ public class PropertyAssessmentsApplication extends Application {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 int index = table.getSelectionModel().getSelectedIndex();
                 PropertyAssessment property = (PropertyAssessment) table.getItems().get(index);
-                System.out.println(property.getLocation());
+
             }
         });
 
@@ -235,7 +228,7 @@ public class PropertyAssessmentsApplication extends Application {
 
 //map functions start
 
-    public static StackPane createMap() throws FileNotFoundException {
+    public StackPane createMap() throws FileNotFoundException {
         StackPane stackPane = new StackPane();
         //arcgis key
         try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/ArcGIS_ApiKey"))) {
@@ -262,7 +255,7 @@ public class PropertyAssessmentsApplication extends Application {
     }
 
     // no longer using text box search
-        private static void setupTextField() {
+        private void setupTextField() {
         searchBox = new TextField();
         searchBox.setMaxWidth(300);
         searchBox.setPromptText("Search");
@@ -273,18 +266,20 @@ public class PropertyAssessmentsApplication extends Application {
             String text = searchBox.getText();
             if(!text.isEmpty()){
                 //graphicsOverlay.getGraphics().clear(); // clears the overlay of any previous result
-                performGeocode(text, "address");
+                //performGeocode(text, "address");
             }
         });
     }
 
-    private static void schoolButtonUsage(){
+    private void schoolButtonUsage() throws IOException {
         System.out.println(" in School Button usage");
-        String schools = Schools.getAllCoordinates();
+        Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv");
+        String schools = schoolsInstance.getAllCoordinates();
+        //String schools = "-113.434494524 53.5397222576, -113.501975651 53.519775373";
         getPointPlacement(schools);
     }
 
-    public static void createLocatorTask() {
+    public void createLocatorTask() {
         locatorTask = new LocatorTask("https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer");
         geocodeParameters = new GeocodeParameters();
         geocodeParameters.getResultAttributeNames().add("*");
@@ -293,7 +288,7 @@ public class PropertyAssessmentsApplication extends Application {
     }
 
     // this is not working
-    private static void performGeocode(String address, String type) {
+    private void performGeocode(String address, String type) {
         if(address.equalsIgnoreCase("Edmonton")){
             //getEdmontonBounds();
             return;
@@ -318,7 +313,7 @@ public class PropertyAssessmentsApplication extends Application {
     }
 
     //this is not working
-    private static void displayResult(GeocodeResult geocodeResult, String type) {
+    private void displayResult(GeocodeResult geocodeResult, String type) {
         Color c = null;
         if (type.equals("address")) {
             c = Color.RED;
@@ -337,7 +332,7 @@ public class PropertyAssessmentsApplication extends Application {
         }
     }
 
-    private static void getEdmontonBounds(String multiPolygon) {
+    private void getEdmontonBounds(String multiPolygon) {
         //List<List<String>> edmontonCoord = new ArrayList<>();
 //        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/City_of_Edmonton_-_Corporate_Boundary__current__20250325.csv"))) {
 //            String line;
@@ -376,20 +371,21 @@ public class PropertyAssessmentsApplication extends Application {
 //        }
     }
 
-    private static void getPointPlacement(String locations){
+    private void getPointPlacement(String locations) {
         System.out.println("in point placement " + locations);
         SimpleMarkerSymbol markerSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.RED, 6);
+
         Pattern pattern = Pattern.compile("(-?[0-9]+\\.[0-9]+)\\s([0-9]+\\.[0-9]+)");
         Matcher matcher = pattern.matcher(locations);
 
         while (matcher.find()) {
-            System.out.println("in loop" + matcher.group(1));
             String longitude = matcher.group(1);
             String latitude = matcher.group(2);
             Point point = new Point(Double.parseDouble(longitude), Double.parseDouble(latitude), SpatialReference.create(4326));
             Graphic markerGraphic = new Graphic(point, markerSymbol);
             graphicsOverlay.getGraphics().add(markerGraphic);
         }
+
     }
 
 //map functions end

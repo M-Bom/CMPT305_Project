@@ -127,15 +127,18 @@ public class Schools {
         return null;
     }
 
-    public ArrayList<String> getAllCoordinates() {
-        ArrayList<String> coordinates = new ArrayList<>();
+    public String getAllCoordinates() {
+        //ArrayList<String> coordinates = new ArrayList<>();
+        String coordinates = "";
         for (School school : schools) {
             String latitude = school.getLocation().getLatitude();
             String longitude = school.getLocation().getLongitude();
             if (latitude != null && longitude != null && !latitude.isEmpty() && !longitude.isEmpty()) {
-                coordinates.add("(" + latitude + " " + longitude + ")");
+                //coordinates.add("(" + latitude + " " + longitude + ")");
+                coordinates += latitude + " " + longitude + ", ";
             }
         }
+        System.out.println(coordinates);
         return coordinates;
     }
 
