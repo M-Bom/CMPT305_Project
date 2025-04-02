@@ -9,6 +9,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
@@ -117,7 +119,7 @@ public class PropertyAssessmentsApplication extends Application {
 
     VBox setVB1(VBox vb, PropertyAssessments propertyAssessments) throws IOException {
         List<Neighbourhood> neighbourhoods = propertyAssessments.getAllNeighbourhoods();
-        List<Address> addresses = propertyAssessments.getAllAddresses();
+        //List<Address> addresses = propertyAssessments.getAllAddresses();
 
         //vb.setPrefWidth(700);
 
@@ -140,6 +142,14 @@ public class PropertyAssessmentsApplication extends Application {
 
         table.getColumns().setAll(neighbourhood, address, value);
         table.setItems(data);
+
+        table.setOnMouseClicked(event -> {
+            if (event.getButton().equals(MouseButton.PRIMARY)) {
+                int index = table.getSelectionModel().getSelectedIndex();
+                PropertyAssessment property = (PropertyAssessment) table.getItems().get(index);
+                System.out.println(property.getLocation());
+            }
+        });
 
         // Choice box of all possible neighbourhoods with wards
         ChoiceBox<Neighbourhood> neighbourhoodFilter = new ChoiceBox<>();
