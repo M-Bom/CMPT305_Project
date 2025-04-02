@@ -96,19 +96,43 @@ public class PropertyAssessmentsApplication extends Application {
         //create address search within map
         //setupTextField();
         //stackPane.getChildren().add(searchBox);
-        //show schools button
+
+        //create schools button
         Button schoolButton = new Button("School");
         StackPane.setMargin(schoolButton, new Insets(0, 0, 0, 10) );
         schoolButton.setStyle("-fx-background-color: #649aef; -fx-background-size: 20px 40px");
         stackPane.getChildren().add(schoolButton);
         stackPane.setAlignment(schoolButton, Pos.TOP_LEFT);
+        //createLocatorTask();
+            schoolButton.setOnAction(event -> {
+                try {
+                    schoolButtonUsage();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            //create school catchment button
+          //show all catchments - do if time before demo
+//        Button catchmentButton = new Button("Catchments");
+//        StackPane.setMargin(catchmentButton, new Insets(40, 0, 0, 10) );
+//        catchmentButton.setStyle("-fx-background-color: #dfdfdf; -fx-background-size: 20px 50px");
+//        stackPane.getChildren().add(catchmentButton);
+//        stackPane.setAlignment(catchmentButton, Pos.TOP_LEFT);
+//        createLocatorTask();
+//        catchmentButton.setOnAction(event -> {
+//            catchmentButtonUsage();
+//        });
+
+        //create clear button
+        ToggleButton clearButton = new ToggleButton("Clear");
+        StackPane.setMargin(clearButton, new Insets(0, 0, 0, 75) );
+        clearButton.setStyle("-fx-background-color: #dfdfdf; -fx-background-size: 20px 40px");
+        stackPane.getChildren().add(clearButton);
+        stackPane.setAlignment(clearButton, Pos.TOP_LEFT);
         createLocatorTask();
-        schoolButton.setOnAction(event -> {
-            try {
-                schoolButtonUsage();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        clearButton.setOnAction(event -> {
+            graphicsOverlay.getGraphics().clear(); // clears the overlay of any previous result
         });
 
         onSearch(vb1, residentialFilteredPropertyAssessments, neighbourhoodCatchments);
@@ -272,7 +296,6 @@ public class PropertyAssessmentsApplication extends Application {
     }
 
     private void schoolButtonUsage() throws IOException {
-        System.out.println(" in School Button usage");
         Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv");
         String schools = schoolsInstance.getAllCoordinates();
         //String schools = "-113.434494524 53.5397222576, -113.501975651 53.519775373";
@@ -372,8 +395,7 @@ public class PropertyAssessmentsApplication extends Application {
     }
 
     private void getPointPlacement(String locations) {
-        System.out.println("in point placement " + locations);
-        SimpleMarkerSymbol markerSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.RED, 6);
+        SimpleMarkerSymbol markerSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.BLUE, 6);
 
         Pattern pattern = Pattern.compile("(-?[0-9]+\\.[0-9]+)\\s([0-9]+\\.[0-9]+)");
         Matcher matcher = pattern.matcher(locations);
