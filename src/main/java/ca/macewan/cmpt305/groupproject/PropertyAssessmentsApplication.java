@@ -98,7 +98,7 @@ public class PropertyAssessmentsApplication extends Application {
         //stackPane.getChildren().add(searchBox);
 
         //create schools button
-        Button schoolButton = new Button("School");
+        Button schoolButton = new Button("Elementary School");
         StackPane.setMargin(schoolButton, new Insets(0, 0, 0, 10) );
         schoolButton.setStyle("-fx-background-color: #649aef; -fx-background-size: 20px 40px");
         stackPane.getChildren().add(schoolButton);
@@ -106,33 +106,52 @@ public class PropertyAssessmentsApplication extends Application {
         //createLocatorTask();
             schoolButton.setOnAction(event -> {
                 try {
-                    schoolButtonUsage();
+                    elemSchoolButtonUsage();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             });
 
-            //create school catchment button
-          //show all catchments - do if time before demo
-//        Button catchmentButton = new Button("Catchments");
-//        StackPane.setMargin(catchmentButton, new Insets(40, 0, 0, 10) );
-//        catchmentButton.setStyle("-fx-background-color: #dfdfdf; -fx-background-size: 20px 50px");
-//        stackPane.getChildren().add(catchmentButton);
-//        stackPane.setAlignment(catchmentButton, Pos.TOP_LEFT);
-//        createLocatorTask();
-//        catchmentButton.setOnAction(event -> {
-//            catchmentButtonUsage();
-//        });
-
-        //create clear button
-        ToggleButton clearButton = new ToggleButton("Clear");
-        StackPane.setMargin(clearButton, new Insets(0, 0, 0, 75) );
-        clearButton.setStyle("-fx-background-color: #dfdfdf; -fx-background-size: 20px 40px");
-        stackPane.getChildren().add(clearButton);
-        stackPane.setAlignment(clearButton, Pos.TOP_LEFT);
+        Button highSchoolButton = new Button("High School");
+        StackPane.setMargin(highSchoolButton, new Insets(60, 0, 0, 10) );
+        highSchoolButton.setStyle("-fx-background-color: #f6de71; -fx-background-size: 20px 50px");
+        stackPane.getChildren().add(highSchoolButton);
+        stackPane.setAlignment(highSchoolButton, Pos.TOP_LEFT);
         createLocatorTask();
-        clearButton.setOnAction(event -> {
-            graphicsOverlay.getGraphics().clear(); // clears the overlay of any previous result
+        highSchoolButton.setOnAction(event -> {
+            try {
+                highSchoolButtonusage();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        Button jrSchoolButton = new Button("Jr. High School");
+        StackPane.setMargin(jrSchoolButton, new Insets(30, 0, 0, 10) );
+        jrSchoolButton.setStyle("-fx-background-color: #f3914d; -fx-background-size: 20px 40px");
+        stackPane.getChildren().add(jrSchoolButton);
+        stackPane.setAlignment(jrSchoolButton, Pos.TOP_LEFT);
+        createLocatorTask();
+        jrSchoolButton.setOnAction(event -> {
+            try {
+                jrSchoolButtonUsage();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        Button parksButton = new Button("parks");
+        StackPane.setMargin(parksButton, new Insets(90, 0, 0, 10) );
+        parksButton.setStyle("-fx-background-color: #7cf34d; -fx-background-size: 20px 40px");
+        stackPane.getChildren().add(parksButton);
+        stackPane.setAlignment(parksButton, Pos.TOP_LEFT);
+        createLocatorTask();
+        parksButton.setOnAction(event -> {
+            try {
+                parksButtonUsage();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         onSearch(vb1, residentialFilteredPropertyAssessments, neighbourhoodCatchments);
@@ -295,11 +314,32 @@ public class PropertyAssessmentsApplication extends Application {
         });
     }
 
-    private void schoolButtonUsage() throws IOException {
-        Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv");
-        String schools = schoolsInstance.getAllCoordinates();
-        //String schools = "-113.434494524 53.5397222576, -113.501975651 53.519775373";
-        getPointPlacement(schools);
+    private void elemSchoolButtonUsage() throws IOException {
+        //Put instance for elementary schools here!!!!
+        Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv");// replace me
+        String schools = schoolsInstance.getAllCoordinates(); // replace me
+        getPointPlacement(schools, "elem");
+    }
+
+    private void highSchoolButtonusage() throws IOException {
+        //Put instance for High schools here!!!!!
+        Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv");//replace me
+        String schools = schoolsInstance.getAllCoordinates(); // replace me
+        getPointPlacement(schools, "high");
+    }
+
+    private void jrSchoolButtonUsage() throws IOException {
+        //Put instance for jr High schools here!!!!!
+        Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv"); //replace me
+        String schools = schoolsInstance.getAllCoordinates(); //replace me
+        getPointPlacement(schools, "jr");
+    }
+
+    private void parksButtonUsage() throws IOException {
+        //add parks instance here!!!!
+
+        String parks = " please add parks getAllCoordinates";
+        getPointPlacement(parks, "park");
     }
 
     public void createLocatorTask() {
@@ -394,8 +434,21 @@ public class PropertyAssessmentsApplication extends Application {
 //        }
     }
 
-    private void getPointPlacement(String locations) {
-        SimpleMarkerSymbol markerSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.BLUE, 6);
+    private void getPointPlacement(String locations, String type) {
+        Color c = null;
+        if (type.equals("address")) {
+            c = Color.RED;
+        } else if (type.equals("elem")) {
+            c = Color.BLUE;
+        } else if (type.equals("high")) {
+            c = Color.YELLOW;
+        }else if (type.equals("jr")) {
+            c = Color.ORANGE;
+        }else if (type.equals("park")) {
+            c = Color.GREEN;
+        }
+
+        SimpleMarkerSymbol markerSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, c, 6);
 
         Pattern pattern = Pattern.compile("(-?[0-9]+\\.[0-9]+)\\s([0-9]+\\.[0-9]+)");
         Matcher matcher = pattern.matcher(locations);
@@ -407,7 +460,6 @@ public class PropertyAssessmentsApplication extends Application {
             Graphic markerGraphic = new Graphic(point, markerSymbol);
             graphicsOverlay.getGraphics().add(markerGraphic);
         }
-
     }
 
 //map functions end
@@ -431,6 +483,8 @@ public class PropertyAssessmentsApplication extends Application {
                 table.setItems(FXCollections.observableArrayList(propertyAssessments.getData()));
                 neighbourhoodFilter.getSelectionModel().clearSelection();
                 priceFilter.getSelectionModel().clearSelection();
+                graphicsOverlay.getGraphics().clear(); // clears the map graphics overlay of any previous result
+
             }
         };
         reset.setOnAction(event);
