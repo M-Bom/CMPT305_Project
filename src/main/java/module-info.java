@@ -1,7 +1,6 @@
 module ca.macewan.cmpt305.groupproject {
-    requires javafx.controls;
-    requires javafx.fxml;
     requires java.desktop;
+    requires com.esri.arcgisruntime;
 
 
     opens ca.macewan.cmpt305.groupproject to javafx.fxml;
