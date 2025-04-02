@@ -269,7 +269,9 @@ public class PropertyAssessmentsApplication extends Application {
     }
 
     private static void schoolButtonUsage(){
-        String schools;
+        System.out.println(" in School Button usage");
+        String schools = "-113.604686955 53.5163428888, -113.434494524 53.5397222576";
+        getPointPlacement(schools);
     }
 
     public static void createLocatorTask() {
@@ -365,15 +367,17 @@ public class PropertyAssessmentsApplication extends Application {
     }
 
     private static void getPointPlacement(String locations){
-        SimpleMarkerSymbol markerSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.RED, 6.0f);
+        System.out.println("in point placement " + locations);
+        SimpleMarkerSymbol markerSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.RED, 6);
         Pattern pattern = Pattern.compile("(-?[0-9]+\\.[0-9]+)\\s([0-9]+\\.[0-9]+)");
         Matcher matcher = pattern.matcher(locations);
 
         while (matcher.find()) {
+            System.out.println("in loop" + matcher.group(1));
             String longitude = matcher.group(1);
             String latitude = matcher.group(2);
-            new Point(Double.parseDouble(longitude), Double.parseDouble(latitude));
-            Graphic markerGraphic = new Graphic(new Point(Double.parseDouble(longitude), Double.parseDouble(latitude)), markerSymbol);
+            Point point = new Point(Double.parseDouble(longitude), Double.parseDouble(latitude), SpatialReference.create(4326));
+            Graphic markerGraphic = new Graphic(point, markerSymbol);
             graphicsOverlay.getGraphics().add(markerGraphic);
         }
     }
