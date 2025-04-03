@@ -49,7 +49,6 @@ import javafx.scene.control.TextField;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public class PropertyAssessmentsApplication extends Application {
 
     TableView table;
@@ -92,16 +91,21 @@ public class PropertyAssessmentsApplication extends Application {
         String csvFileName3 = "Edmonton_Neighbourhoods.csv";
         NeighbourhoodCatchments neighbourhoodCatchments = new NeighbourhoodCatchments(csvFileName3);
 
+        // Create a BorderPane
         BorderPane bp = new BorderPane();
         bp.setPadding(new Insets(10,10,10,10));
 
-        Scene scene = new Scene(bp, 1600, 700);//new Scene(fxmlLoader.load(), win_width, win_height);
+        // Create new scene using the border pane and set the size to 1600x700
+        Scene scene = new Scene(bp, 1600, 700);
         stage.setTitle("Map search");
 
+        // Create a new VBox
         VBox vb1 = new VBox();
 
+        // Call the setVB1 method to set up the display
         vb1 = setVB1(vb1, residentialFilteredPropertyAssessments);
 
+        // Set the location of the VBox in the border pane
         bp.setLeft(vb1);
 
         // ChatBot UI on the right
@@ -126,57 +130,67 @@ public class PropertyAssessmentsApplication extends Application {
         //set map in right side of application
         StackPane stackPane = createMap();
         bp.setCenter(stackPane);
-        //create address search within map
-        //setupTextField();
-        //stackPane.getChildren().add(searchBox);
+
         createButtons(stackPane);
 
+        // Call the onSearch method and to search the data using the filters when pressing the button
         onSearch(vb1, residentialFilteredPropertyAssessments, neighbourhoodCatchments);
 
+        // Call onReset method to reset the filters back to the original state
         onReset(vb1, residentialFilteredPropertyAssessments);
 
+        // set stage name/title and display scene
         stage.setTitle("Map Search");
         stage.setScene(scene);
         stage.show();
     }
 
     VBox setVB1(VBox vb, PropertyAssessments propertyAssessments) throws IOException {
+        // Create a list of neighbourhoods in alphabetical order using the property assessments class
         List<Neighbourhood> neighbourhoods = propertyAssessments.getNeighbourhoodsInAlphabeticalOrder(propertyAssessments.getAllNeighbourhoods());
 
-        //List<Address> addresses = propertyAssessments.getAllAddresses();
-
-        //vb.setPrefWidth(700);
-
+        // create a new table view and set the data stored in the table view to be the propertyAssessments class data
         table = new TableView();
         data = FXCollections.observableArrayList(propertyAssessments.getData());
 
+        // Set the first column in the table to be the neighbourhood
         TableColumn<PropertyAssessment, String> neighbourhood = new TableColumn<>("Neighbourhood");
         neighbourhood.setMinWidth(250);
         neighbourhood.setCellValueFactory(new PropertyValueFactory<>("neighbourhood"));
 
+        // Set the second column in the table to be the address
         TableColumn<PropertyAssessment, String> address = new TableColumn<>("Address");
         address.setMinWidth(250);
         address.setCellValueFactory(new PropertyValueFactory<>("address"));
 
+        // Set the third column in the table to be the assessed value
         TableColumn<PropertyAssessment, String> value = new TableColumn<>("Assessed value");
         value.setMinWidth(250);
         value.setCellValueFactory(new PropertyValueFactory<>("assessmentClass"));
 
+        // Set the priority for the growth of the table
         vb.setVgrow(table, Priority.ALWAYS);
 
+        // Set the columns of the table to the values set above (neighbourhood, address, value)
+        // and add the data to the table
         table.getColumns().setAll(neighbourhood, address, value);
         table.setItems(data);
 
+        // Allow for the table to be clicked
         table.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 int index = table.getSelectionModel().getSelectedIndex();
+                // When selected obtain the property from the table
                 PropertyAssessment property = (PropertyAssessment) table.getItems().get(index);
+                // Get the location of the property and then create the points on the map using the
+                // longitude and latitude coordinates
                 Location propertyLocation = property.getLocation();
                 String longitude = propertyLocation.getLongitude();
                 String latitude = propertyLocation.getLatitude();
                 String location = String.format("%s %s,", longitude, latitude);
                 System.out.println(location);
                 getPointPlacement(location, "address");
+                // Obtain the properties ID number and display it in the chatbot textbox
                 chatArea.appendText("Property ID: "+property.getId()+"\n");
             }
         });
@@ -189,13 +203,15 @@ public class PropertyAssessmentsApplication extends Application {
         ChoiceBox<String> priceFilter = new ChoiceBox<>();
         priceFilter.getItems().addAll("0 - 99,999","100,000 - 499,999", "500,000 - 999,999", "1,000,000+");
 
-        //create search and reset button
+        // Create search and reset button
         Button search = new Button("Search");
         Button reset = new Button("Reset");
         HBox hb = new HBox(10);
 
+        // Add the filters search and reset button to a HBox
         hb.getChildren().addAll(neighbourhoodFilter, priceFilter, search, reset);
 
+        // Display the HBox and table
         vb.getChildren().addAll(hb, table);
 
         return vb;
@@ -210,46 +226,53 @@ public class PropertyAssessmentsApplication extends Application {
     }
 
     void onSearch(VBox vb, PropertyAssessments propertyAssessments, NeighbourhoodCatchments neighbourhoodCatchments) {
-        // retrieve neighbourhoodFilter from vertical box
+        // Retrieve neighbourhoodFilter from vertical box
         ChoiceBox<Neighbourhood> neighbourhoodFilter = (ChoiceBox<Neighbourhood>) ((HBox) vb.getChildren().getFirst()).getChildren().get(0);
 
-        // retrieve priceFilter from vertical box
+        // Retrieve priceFilter from vertical box
         ChoiceBox<String> priceFilter = (ChoiceBox<String>) ((HBox) vb.getChildren().getFirst()).getChildren().get(1);
 
-        // retrieve search button from vertical box
+        // Retrieve search button from vertical box
         Button search = (Button) ((HBox) vb.getChildren().getFirst()).getChildren().get(2);
 
         // Event handler for search button on click
         EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
+                // Obtain the neighbourhood value from the filter
                 Neighbourhood neighbourhood = neighbourhoodFilter.getValue();
+                // If the filter is selected get the neighbourhood name and price filter
                 if (neighbourhood != null) {
                     String filter1 = neighbourhood.getNeighbourhoodName();
                     System.out.println(filter1);
                     String filter2 = priceFilter.getValue();
                     System.out.println(filter2);
+
+                    // If the neighbourhood filter is selected and the price filter is not active
                     if (filter1 != null && filter2 == null) {
-                        PropertyAssessments filteredPropertyAssessments = propertyAssessments.getFilteredData(filter1);
-                        NeighbourhoodCatchment neighbourhoodCatchment = neighbourhoodCatchments.getNeighbourHoodCatchmentByName(filter1);
-                        Catchment neighbourhoodPolygon = neighbourhoodCatchment.getCatchment();
-                        getEdmontonBounds(String.valueOf(neighbourhoodPolygon));
-                        table.getItems().clear();
-                        table.getItems().addAll(filteredPropertyAssessments.getData());
+                        // Filter the property assessment data by the filter display on the table and obtain
+                        // the Multipolygon value for the neighbourhood and display it on the map
+                        applyFilters(filter1, neighbourhoodCatchments.getNeighbourHoodCatchmentByName(filter1), propertyAssessments, neighbourhoodCatchments);
+
+                        // If both the neighbourhood and price filter are active
                     } else if (filter1 != null) {
+                        // Filter the property assessment data by the filters display on the table and obtain
+                        // the Multipolygon value for the neighbourhood and display it on the map
                         PropertyAssessments filteredPropertyAssessments1 = propertyAssessments.getFilteredData(filter1);
-                        PropertyAssessments filteredPropertyAssessments2 = filteredPropertyAssessments1.getFilteredData(filter2);
-                        NeighbourhoodCatchment neighbourhoodCatchment = neighbourhoodCatchments.getNeighbourHoodCatchmentByName(filter1);
-                        Catchment neighbourhoodPolygon = neighbourhoodCatchment.getCatchment();
-                        getEdmontonBounds(String.valueOf(neighbourhoodPolygon));
-                        table.getItems().clear();
-                        table.getItems().addAll(filteredPropertyAssessments2.getData());
+                        applyFilters(filter2, neighbourhoodCatchments.getNeighbourHoodCatchmentByName(filter1), filteredPropertyAssessments1, neighbourhoodCatchments);
+
+                        // If the price filter is changed and the neighbourhood filter is active
                     } else if (filter2 != null) {
+                        // Filter the property assessment data by the filter display on the table and obtain
+                        // the Multipolygon value for the neighbourhood and display it on the map
                         PropertyAssessments filteredPropertyAssessments1 = propertyAssessments.getFilteredData(filter2);
+                        System.out.println(filteredPropertyAssessments1);
                         table.getItems().clear();
                         table.getItems().addAll(filteredPropertyAssessments1.getData());
                     }
+                // In the case where the neighbourhood filter is left blank and the price filter is selected
                 } else {
+                    // Filter the property assessment data by the filter display on the table
                     String filter2 = priceFilter.getValue();
                     System.out.println(filter2);
                     PropertyAssessments filteredPropertyAssessments1 = propertyAssessments.getFilteredData(filter2);
@@ -259,6 +282,18 @@ public class PropertyAssessmentsApplication extends Application {
             }
         };
         search.setOnAction(event);
+    }
+
+    private void applyFilters(String filter, NeighbourhoodCatchment neighbourHoodCatchmentByName, PropertyAssessments propertyAssessments, NeighbourhoodCatchments neighbourhoodCatchments) {
+        // Filter the property assessment data by the filter display on the table and obtain
+        // the Multipolygon value for the neighbourhood and display it on the map
+        PropertyAssessments filteredPropertyAssessments = propertyAssessments.getFilteredData(filter);
+        NeighbourhoodCatchment neighbourhoodCatchment = neighbourHoodCatchmentByName;
+        Catchment neighbourhoodPolygon = neighbourhoodCatchment.getCatchment();
+        System.out.println(neighbourhoodPolygon);
+        getEdmontonBounds(String.valueOf(neighbourhoodPolygon));
+        table.getItems().clear();
+        table.getItems().addAll(filteredPropertyAssessments.getData());
     }
 
     private void handleUserInput() {
