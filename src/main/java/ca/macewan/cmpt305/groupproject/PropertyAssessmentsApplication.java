@@ -142,7 +142,12 @@ public class PropertyAssessmentsApplication extends Application {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 int index = table.getSelectionModel().getSelectedIndex();
                 PropertyAssessment property = (PropertyAssessment) table.getItems().get(index);
-
+                Location propertyLocation = property.getLocation();
+                String longitude = propertyLocation.getLongitude();
+                String latitude = propertyLocation.getLatitude();
+                String location = String.format("%s %s,", longitude, latitude);
+                System.out.println(location);
+                getPointPlacement(location, "address");
             }
         });
 
@@ -227,7 +232,7 @@ public class PropertyAssessmentsApplication extends Application {
                         PropertyAssessments filteredPropertyAssessments = propertyAssessments.getFilteredData(filter1);
                         NeighbourhoodCatchment neighbourhoodCatchment = neighbourhoodCatchments.getNeighbourHoodCatchmentByName(filter1);
                         Catchment neighbourhoodPolygon = neighbourhoodCatchment.getCatchment();
-                        System.out.println(neighbourhoodPolygon);
+                        getEdmontonBounds(String.valueOf(neighbourhoodPolygon));
                         table.getItems().clear();
                         table.getItems().addAll(filteredPropertyAssessments.getData());
                     } else if (filter1 != null) {
@@ -235,7 +240,7 @@ public class PropertyAssessmentsApplication extends Application {
                         PropertyAssessments filteredPropertyAssessments2 = filteredPropertyAssessments1.getFilteredData(filter2);
                         NeighbourhoodCatchment neighbourhoodCatchment = neighbourhoodCatchments.getNeighbourHoodCatchmentByName(filter1);
                         Catchment neighbourhoodPolygon = neighbourhoodCatchment.getCatchment();
-                        System.out.println(neighbourhoodPolygon);
+                        getEdmontonBounds(String.valueOf(neighbourhoodPolygon));
                         table.getItems().clear();
                         table.getItems().addAll(filteredPropertyAssessments2.getData());
                     } else if (filter2 != null) {
