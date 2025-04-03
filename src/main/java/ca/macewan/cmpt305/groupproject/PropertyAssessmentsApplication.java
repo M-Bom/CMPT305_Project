@@ -378,21 +378,21 @@ public class PropertyAssessmentsApplication extends Application {
     private void elemSchoolButtonUsage() throws IOException {
         //Put instance for elementary schools here!!!!
         Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv");// replace me
-        String schools = schoolsInstance.getAllCoordinates(); // replace me
+        String schools = schoolsInstance.getElementarySchools().getAllCoordinates(); // replace me
         getPointPlacement(schools, "elem");
     }
 
     private void highSchoolButtonusage() throws IOException {
         //Put instance for High schools here!!!!!
         Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv");//replace me
-        String schools = schoolsInstance.getAllCoordinates(); // replace me
+        String schools = schoolsInstance.getSeniorSchools().getAllCoordinates(); // replace me
         getPointPlacement(schools, "high");
     }
 
     private void jrSchoolButtonUsage() throws IOException {
         //Put instance for jr High schools here!!!!!
         Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv"); //replace me
-        String schools = schoolsInstance.getAllCoordinates(); //replace me
+        String schools = schoolsInstance.getJuniorSchools().getAllCoordinates(); //replace me
         getPointPlacement(schools, "jr");
     }
 

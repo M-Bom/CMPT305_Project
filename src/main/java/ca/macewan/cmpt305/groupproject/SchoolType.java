@@ -8,4 +8,17 @@ public class SchoolType {
         this.type = type;
         this.grades = grades;
     }
+    public String getType() {
+        return type;
+    }
+
+    public String getGrades() {
+        return grades;
+    }
+
+    @Override
+    public String toString() {
+        return "SchoolType{" + "type=" + type + ", grades=" + grades + '}';
+    }
+
 }

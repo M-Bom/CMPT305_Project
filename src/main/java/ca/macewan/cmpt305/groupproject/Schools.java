@@ -143,4 +143,78 @@ public class Schools {
         return coordinates;
     }
 
+    public List<String> getAllSchoolTypes() {
+        List<String> types = new ArrayList<>();
+        for (School school : schools) {
+            if (school.getSchoolType() != null &&
+                    school.getSchoolType().getType() != null &&
+                    !types.contains(school.getSchoolType().getType())) {
+                types.add(school.getSchoolType().getType());
+            }
+        }
+        return types;
+    }
+
+
+
+    public Schools getSchoolsByType(String partialType) {
+        List<School> result = new ArrayList<>();
+        for (School school : schools) {
+            if (school.getSchoolType() != null &&
+                    school.getSchoolType().getType() != null &&
+                    school.getSchoolType().getType().toLowerCase().contains(partialType.toLowerCase())) {
+                result.add(school);
+            }
+        }
+        return new Schools(result);
+    }
+
+
+    public Schools getSchoolsByGrade(String grade) {
+        List<School> result = new ArrayList<>();
+        for (School school : schools) {
+            if (school.getSchoolType() != null &&
+                    school.getSchoolType().getGrades() != null &&
+                    school.getSchoolType().getGrades().toLowerCase().contains(grade.toLowerCase())) {
+                result.add(school);
+            }
+        }
+        return new Schools(result);
+    }
+
+    public Schools getElementarySchools() {
+        return getSchoolsByType("E");
+    }
+
+    public Schools getJuniorSchools() {
+        return getSchoolsByType("J");
+    }
+
+    public Schools getSeniorSchools() {
+        List<School> result = new ArrayList<>();
+        for (School school : schools) {
+            String type = school.getSchoolType().getType().toUpperCase();
+            if (type.contains("S") && !type.contains("P")) {
+                result.add(school);
+            }
+        }
+        return new Schools(result);
+    }
+
+
+
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (School school : schools) {
+            sb.append(school.getName())
+                    .append(" - ")
+                    .append(school.getAddress())
+                    .append(System.lineSeparator());
+        }
+        return sb.toString();
+    }
+
 }
