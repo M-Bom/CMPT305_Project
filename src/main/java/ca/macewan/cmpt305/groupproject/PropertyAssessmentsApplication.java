@@ -184,7 +184,7 @@ public class PropertyAssessmentsApplication extends Application {
                 String location = String.format("%s %s,", longitude, latitude);
                 System.out.println(location);
                 getPointPlacement(location, "address");
-                chatArea.appendText("Property ID: "+property.getId());
+                chatArea.appendText("Property ID: "+property.getId()+"\n");
             }
         });
 
