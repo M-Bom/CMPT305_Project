@@ -55,7 +55,7 @@ public class Neighbourhood {
      */
     @Override
     public String toString() {
-        return "Neighbourhood = " + this.neighbourhoodName + " (" + this.ward + ")";
+        return this.neighbourhoodName + " (" + this.ward + ")";
     }
 
     /**

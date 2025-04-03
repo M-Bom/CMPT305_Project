@@ -57,9 +57,9 @@ public class Address {
     @Override
     public String toString() {
         if (this.suiteNumber == null || this.suiteNumber.isBlank()) {
-            return "Address = " + this.houseNumber + " " + this.street;
+            return this.houseNumber + " " + this.street;
         }
-        return "Address = " + this.houseNumber + " " + this.street + " Suite " + this.suiteNumber;
+        return this.houseNumber + " " + this.street + " Suite " + this.suiteNumber;
     }
 
     /**

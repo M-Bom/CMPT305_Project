@@ -66,11 +66,11 @@ public class AssessmentClass {
         String classPercent3 = this.classPercents[2];
 
         if (className2 == null || className2.isEmpty() && (className3 == null || className3.isEmpty())) {
-            return String.format("Assessed Value = $%,d\nAssessment Class = [%s %s%%]", this.assessedValue, className1, classPercent1);
+            return String.format("$%,d\n[%s %s%%]", this.assessedValue, className1, classPercent1);
         } else if (className3 == null || className3.isEmpty()) {
-            return String.format("Assessed Value = $%,d\nAssessment Class = [%s %s%%, %s %s%%]", this.assessedValue, className1, classPercent1, className2, classPercent2);
+            return String.format("$%,d\n[%s %s%%, %s %s%%]", this.assessedValue, className1, classPercent1, className2, classPercent2);
         } else {
-            return String.format("Assessed Value = $%,d\nAssessment Class = [%s %s%%, %s %s%%, %s %s%%]", this.assessedValue, className1, classPercent1, className2, classPercent2, className3, classPercent3);
+            return String.format("$%,d\n[%s %s%%, %s %s%%, %s %s%%]", this.assessedValue, className1, classPercent1, className2, classPercent2, className3, classPercent3);
         }
     }
 
