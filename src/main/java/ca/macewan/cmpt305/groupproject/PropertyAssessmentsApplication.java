@@ -148,7 +148,8 @@ public class PropertyAssessmentsApplication extends Application {
     }
 
     VBox setVB1(VBox vb, PropertyAssessments propertyAssessments) throws IOException {
-        List<Neighbourhood> neighbourhoods = propertyAssessments.getAllNeighbourhoods();
+        List<Neighbourhood> neighbourhoods = propertyAssessments.getNeighbourhoodsInAlphabeticalOrder(propertyAssessments.getAllNeighbourhoods());
+
         //List<Address> addresses = propertyAssessments.getAllAddresses();
 
         //vb.setPrefWidth(700);
