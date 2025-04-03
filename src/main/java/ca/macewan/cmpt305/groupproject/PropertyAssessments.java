@@ -180,13 +180,14 @@ public class PropertyAssessments {
 
     public List<Neighbourhood> getAllNeighbourhoods() {
         Set<Neighbourhood> neighbourhoods = this.data.stream().map(PropertyAssessment::getNeighbourhood).collect(Collectors.toSet());
+        //System.out.println(neighbourhoods.size());
         return new ArrayList<>(neighbourhoods);
     }
 
-    public List<Address> getAllAddresses() {
-        List<Address> addresses =  this.data.stream().map(PropertyAssessment::getAddress).collect(Collectors.toList());
-        //System.out.print(addresses);
-        return addresses;
+    public List<Neighbourhood> getNeighbourhoodsInAlphabeticalOrder(List<Neighbourhood> neighbourhoods) {
+        List<Neighbourhood> sortedNeighbourhoods =  new ArrayList<>(neighbourhoods);
+        sortedNeighbourhoods.sort(Comparator.comparing(Neighbourhood::getNeighbourhoodName));
+        return sortedNeighbourhoods;
     }
 
     /**
