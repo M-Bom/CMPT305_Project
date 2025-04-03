@@ -67,6 +67,7 @@ public class PropertyAssessmentsApplication extends Application {
     private boolean isElemSchoolVisible = false;
     private boolean isJrSchoolVisible = false;
     private boolean isSrSchoolVisible = false;
+    private boolean isParkVisible = false;
 
 
 
@@ -389,7 +390,7 @@ public class PropertyAssessmentsApplication extends Application {
                 isSrSchoolVisible = true;
             }
             else {
-                graphicsOverlay.getGraphics().removeIf(graphic -> "sr".equals(graphic.getAttributes().get("type")));
+                graphicsOverlay.getGraphics().removeIf(graphic -> "high".equals(graphic.getAttributes().get("type")));
                 isSrSchoolVisible = false;
             }
         });
@@ -422,10 +423,18 @@ public class PropertyAssessmentsApplication extends Application {
         stackPane.setAlignment(parksButton, Pos.TOP_LEFT);
         createLocatorTask();
         parksButton.setOnAction(event -> {
-            try {
-                parksButtonUsage();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if(!isParkVisible){
+
+                    try {
+                        parksButtonUsage();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                isParkVisible = true;
+            }
+            else {
+                graphicsOverlay.getGraphics().removeIf(graphic -> "park".equals(graphic.getAttributes().get("type")));
+                isParkVisible = false;
             }
         });
     }
@@ -453,8 +462,8 @@ public class PropertyAssessmentsApplication extends Application {
 
     private void parksButtonUsage() throws IOException {
         //add parks instance here!!!!
-
-        String parks = " please add parks getAllCoordinates";
+        Parks parksInstance = new Parks("Parks_20250326.csv");
+        String parks = parksInstance.getAllCoordinates();
         getPointPlacement(parks, "park");
     }
 
