@@ -69,15 +69,8 @@ public class PropertyAssessmentsApplication extends Application {
     private boolean isSrSchoolVisible = false;
     private boolean isParkVisible = false;
 
-
-
-
-
     @Override
     public void start(Stage stage) throws IOException {
-        //FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
-        //Scene scene = new Scene(fxmlLoader.load(), 1280, 960);
-
         try {
             chatBot = new ChatBot(
                     "src/main/resources/Property_Assessment_Data_2024.csv",
@@ -89,13 +82,13 @@ public class PropertyAssessmentsApplication extends Application {
             return;
         }
 
+        // Create the property assessments object using the csv file
         String csvFileName1 = "src/main/resources/Property_Assessment_Data_2024.csv";
         PropertyAssessments propertyAssessments = new PropertyAssessments(csvFileName1);
+        // Filter the object by Residential assessment type
         PropertyAssessments residentialFilteredPropertyAssessments = propertyAssessments.getFilteredData("Residential");
 
-        //String csvFileName2 = "src/main/resources/Edmonton_Public_School_Board.csv";
-        //Schools schools = new Schools(csvFileName2);
-
+        // Create the neighbourhood catchments object using the Edmonton_neighbourhoods csv file
         String csvFileName3 = "Edmonton_Neighbourhoods.csv";
         NeighbourhoodCatchments neighbourhoodCatchments = new NeighbourhoodCatchments(csvFileName3);
 
