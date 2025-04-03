@@ -1,6 +1,5 @@
 package ca.macewan.cmpt305.groupproject;
-import java.awt.*;
-import javafx.scene.layout.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,20 +7,19 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
-
-public class Schools {
-    private List<School> schools;
+public class Parks {
+    private List<Park> parks;
     private String filePath;
 
-    // Constructor that takes a list of School Objects
-    public Schools(List<School> schools) {this.schools = schools;}
+    public Parks(List<Park> parks) {
+        this.parks = parks;
+    }
 
     // Constructor that initialize Schools list from a file
     // Constructor for CSV loading
-    public Schools(String csvFileName) throws IOException {
-        this.schools = new ArrayList<>();
+    public Parks(String csvFileName) throws IOException {
+        this.parks = new ArrayList<>();
         this.filePath = "src/main/resources/" + csvFileName;
         // Here I will catch if we can load the file so the program doesn't crash
         try {
@@ -44,25 +42,21 @@ public class Schools {
         }
         for (String[] row : data) {
             // Ensure every row has exactly 20 columns by filling missing values
-            row = Arrays.copyOf(row, 20);
+            row = Arrays.copyOf(row, 11);
             for (int i = 0; i < row.length; i++) {
                 if (row[i] == null || row[i].trim().equals("<null>")) {
                     row[i] = ""; // Replace <null> or missing values with empty string
                 }
             }
 
-            String id = row[4];
-            String year = row[0];
-            SchoolName name = new SchoolName(row[5], row[2]);
-            SchoolType schoolType = new SchoolType(row[6], row[7]);
-            Address address = new Address(row[8], "", "");
-            Location location = new Location(row[14], row[15]);
-            String catchmentPolygon = row[19];
-            Catchment catchment = new Catchment(catchmentPolygon);
+            String id = row[0];
+            String officialName = row[1];
+            String commonName = row[2];
+            Address address = new Address(row[6], null, null);
+            Location location = new Location(row[8], row[9]);
 
-
-            School school = new School(id, year, name, schoolType, address,catchment, location);
-            schools.add(school);
+            Park park = new Park(id, officialName, commonName, address, location);
+            parks.add(park);
 
         }
     }
@@ -115,106 +109,19 @@ public class Schools {
         return Arrays.copyOf(data, index);
     }
 
-    public int getSize(){
-        return schools.size(); // return size of list
-    }
-
-    public School getSchoolByID(String id){
-        for(School school : schools){
-            if(school.getId().equals(id)){
-                return school;
-            }
-        }
-        return null;
-    }
-
     public String getAllCoordinates() {
         //ArrayList<String> coordinates = new ArrayList<>();
         String coordinates = "";
-        for (School school : schools) {
-            String latitude = school.getLocation().getLatitude();
-            String longitude = school.getLocation().getLongitude();
+        for (Park park : parks) {
+            String latitude = park.getLocation().getLatitude();
+            String longitude = park.getLocation().getLongitude();
             if (latitude != null && longitude != null && !latitude.isEmpty() && !longitude.isEmpty()) {
                 //coordinates.add("(" + latitude + " " + longitude + ")");
-                coordinates += latitude + " " + longitude + ", ";
+                coordinates += latitude + " " + longitude + ",";
             }
         }
         System.out.println(coordinates);
         return coordinates;
-    }
-
-    public List<String> getAllSchoolTypes() {
-        List<String> types = new ArrayList<>();
-        for (School school : schools) {
-            if (school.getSchoolType() != null &&
-                    school.getSchoolType().getType() != null &&
-                    !types.contains(school.getSchoolType().getType())) {
-                types.add(school.getSchoolType().getType());
-            }
-        }
-        return types;
-    }
-
-
-
-    public Schools getSchoolsByType(String partialType) {
-        List<School> result = new ArrayList<>();
-        for (School school : schools) {
-            if (school.getSchoolType() != null &&
-                    school.getSchoolType().getType() != null &&
-                    school.getSchoolType().getType().toLowerCase().contains(partialType.toLowerCase())) {
-                result.add(school);
-            }
-        }
-        return new Schools(result);
-    }
-
-
-    public Schools getSchoolsByGrade(String grade) {
-        List<School> result = new ArrayList<>();
-        for (School school : schools) {
-            if (school.getSchoolType() != null &&
-                    school.getSchoolType().getGrades() != null &&
-                    school.getSchoolType().getGrades().toLowerCase().contains(grade.toLowerCase())) {
-                result.add(school);
-            }
-        }
-        return new Schools(result);
-    }
-
-    public Schools getElementarySchools() {
-        return getSchoolsByType("E");
-    }
-
-    public Schools getJuniorSchools() {
-        return getSchoolsByType("J");
-    }
-
-    public Schools getSeniorSchools() {
-        List<School> result = new ArrayList<>();
-        for (School school : schools) {
-            String type = school.getSchoolType().getType().toUpperCase();
-            if (type.contains("S") && !type.contains("P")) {
-                result.add(school);
-            }
-        }
-        return new Schools(result);
-    }
-
-
-
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (School school : schools) {
-            sb.append(school.getName())
-                    .append(" - ")
-                    .append(school.getAddress())
-                    .append(System.lineSeparator());
-        }
-        return sb.toString();
     }
 
 }
