@@ -102,7 +102,7 @@ public class PropertyAssessmentsApplication extends Application {
         BorderPane bp = new BorderPane();
         bp.setPadding(new Insets(10,10,10,10));
 
-        Scene scene = new Scene(bp, 1200, 460);//new Scene(fxmlLoader.load(), win_width, win_height);
+        Scene scene = new Scene(bp, 1600, 700);//new Scene(fxmlLoader.load(), win_width, win_height);
         stage.setTitle("Map search");
 
         VBox vb1 = new VBox();
@@ -376,7 +376,7 @@ public class PropertyAssessmentsApplication extends Application {
 
         Button highSchoolButton = new Button("High School");
         StackPane.setMargin(highSchoolButton, new Insets(60, 0, 0, 10) );
-        highSchoolButton.setStyle("-fx-background-color: #f6de71; -fx-background-size: 20px 50px");
+        highSchoolButton.setStyle("-fx-background-color: #c571f6; -fx-background-size: 20px 50px");
         stackPane.getChildren().add(highSchoolButton);
         stackPane.setAlignment(highSchoolButton, Pos.TOP_LEFT);
         createLocatorTask();
@@ -550,7 +550,7 @@ public class PropertyAssessmentsApplication extends Application {
             //System.out.println(longitude);
         }
 
-        SimpleFillSymbol simpleFillSymbol = new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, Color.web("#32A4A8", .8), simpleLineSymbol1);
+        SimpleFillSymbol simpleFillSymbol = new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, Color.web("#32A4A8", .5), simpleLineSymbol1);
         Polygon polygon = new Polygon(pointCollection);
         Graphic polygonGraphic = new Graphic(polygon, simpleFillSymbol);
         graphicsOverlay.getGraphics().add(polygonGraphic);
@@ -568,14 +568,14 @@ public class PropertyAssessmentsApplication extends Application {
         } else if (type.equals("elem")) {
             c = Color.BLUE;
         } else if (type.equals("high")) {
-            c = Color.YELLOW;
+            c = Color.MEDIUMPURPLE;
         }else if (type.equals("jr")) {
             c = Color.ORANGE;
         }else if (type.equals("park")) {
             c = Color.GREEN;
         }
 
-        SimpleMarkerSymbol markerSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, c, 6);
+        SimpleMarkerSymbol markerSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, c, 5);
 
         Pattern pattern = Pattern.compile("(-?[0-9]+\\.[0-9]+)\\s([0-9]+\\.[0-9]+)");
         Matcher matcher = pattern.matcher(locations);
