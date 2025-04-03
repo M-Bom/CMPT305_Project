@@ -61,6 +61,9 @@ public class PropertyAssessmentsApplication extends Application {
     private static GeocodeParameters geocodeParameters;
     private static GraphicsOverlay graphicsOverlay;
     private static LocatorTask locatorTask;
+    private ChatBot chatBot;
+    private TextArea chatArea;
+    private TextField inputField;
     private boolean isElemSchoolVisible = false;
     private boolean isJrSchoolVisible = false;
     private boolean isSrSchoolVisible = false;
@@ -73,6 +76,17 @@ public class PropertyAssessmentsApplication extends Application {
     public void start(Stage stage) throws IOException {
         //FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         //Scene scene = new Scene(fxmlLoader.load(), 1280, 960);
+
+        try {
+            chatBot = new ChatBot(
+                    "src/main/resources/Property_Assessment_Data_2024.csv",
+                    "Edmonton_Public_School_Board.csv",
+                    "Edmonton_Neighbourhoods.csv"
+            );
+        } catch (IOException e) {
+            showError("Error loading data: " + e.getMessage());
+            return;
+        }
 
         String csvFileName1 = "src/main/resources/Property_Assessment_Data_2024.csv";
         PropertyAssessments propertyAssessments = new PropertyAssessments(csvFileName1);
@@ -96,9 +110,24 @@ public class PropertyAssessmentsApplication extends Application {
 
         bp.setLeft(vb1);
 
+        // ChatBot UI on the right
+        chatArea = new TextArea();
+        chatArea.setEditable(false);
+        chatArea.setWrapText(true);
+        chatArea.setPrefHeight(400);
+        chatArea.setPrefWidth(300);
 
-        VBox chatbotPane = createChatbot();
-        bp.setRight(chatbotPane);
+        inputField = new TextField();
+        inputField.setPromptText("Type your message...");
+        Button sendButton = new Button("Send");
+        sendButton.setOnAction(e -> handleUserInput());
+
+        VBox chatLayout = new VBox(10, chatArea, inputField, sendButton);
+        chatLayout.setPadding(new Insets(10));
+        chatLayout.setStyle("-fx-border-color: gray; -fx-border-width: 1px;");
+
+        // **Add chat layout to the right side of the BorderPane**
+        bp.setRight(chatLayout);
 
         //set map in right side of application
         StackPane stackPane = createMap();
@@ -176,42 +205,13 @@ public class PropertyAssessmentsApplication extends Application {
         return vb;
     }
 
-    private VBox createChatbot() {
-
-        VBox chatbotContainer = new VBox(10);
-        chatbotContainer.setPadding(new Insets(10));
-        chatbotContainer.setPrefWidth(300);
-        chatbotContainer.setAlignment(Pos.TOP_RIGHT);
-
-        Label chatbotLabel = new Label("Chatbot");
-        chatbotLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
-
-        TextArea chatHistory = new TextArea();
-        chatHistory.setEditable(false);
-        chatHistory.setWrapText(true);
-        chatHistory.setPrefHeight(400);
-
-        TextField userInput = new TextField();
-        userInput.setPromptText("Type a message...");
-
-        Button sendButton = new Button("Send");
-        sendButton.setOnAction(event -> {
-            String userText = userInput.getText().trim();
-            if (!userText.isEmpty()) {
-                chatHistory.appendText("You: " + userText + "\n");
-                userInput.clear();
-                String botResponse = getChatbotResponse(userText);
-                chatHistory.appendText("Bot: " + botResponse + "\n");
-            }
-        });
-
-        HBox inputContainer = new HBox(5, userInput, sendButton);
-        inputContainer.setAlignment(Pos.CENTER);
-
-        chatbotContainer.getChildren().addAll(chatbotLabel, chatHistory, inputContainer);
-        return chatbotContainer;
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
-
 
     void onSearch(VBox vb, PropertyAssessments propertyAssessments, NeighbourhoodCatchments neighbourhoodCatchments) {
         // retrieve neighbourhoodFilter from vertical box
@@ -265,15 +265,42 @@ public class PropertyAssessmentsApplication extends Application {
         search.setOnAction(event);
     }
 
-    private String getChatbotResponse(String userMessage) {
-        // Simple responses for demonstration
-        if (userMessage.equalsIgnoreCase("hello")) {
-            return "Hi there! How can I help you?";
-        } else if (userMessage.equalsIgnoreCase("bye")) {
-            return "Goodbye! Have a great day!";
-        } else {
-            return "I'm not sure how to respond to that.";
+    private void handleUserInput() {
+        String userInput = inputField.getText().trim();
+        if (userInput.isEmpty()) return;
+
+        chatArea.appendText("You: " + userInput + "\n");
+
+        if (userInput.equalsIgnoreCase("exit")) {
+            chatArea.appendText("ChatBot: Goodbye!\n");
+            try {
+                Thread.sleep(1000); // Short delay before closing (optional)
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            System.exit(0);
         }
+        if (userInput.equalsIgnoreCase("help")) {
+            chatArea.appendText("ChatBot: Here are some things you can ask me:\n"
+                    + "- property assessment for [ID]\n"
+                    + "- filter by [criteria]\n"
+                    + "- mean assessment value\n"
+                    + "- median assessment value\n"
+                    + "- total number of properties\n"
+                    + "- list all neighbourhoods\n"
+                    + "- neighbourhood details for [NAME]\n"
+                    + "- location for property [ID]\n"
+                    + "- assessment class for property [ID]\n"
+                    + "- total number of schools\n"
+                    + "- school details for [ID]\n"
+                    + "- exit to leave the application\n");
+            inputField.clear();
+            return;
+        }
+
+        String response = chatBot.handleQuery(userInput);
+        chatArea.appendText("ChatBot: " + response + "\n");
+        inputField.clear();
     }
 
 //map functions start
