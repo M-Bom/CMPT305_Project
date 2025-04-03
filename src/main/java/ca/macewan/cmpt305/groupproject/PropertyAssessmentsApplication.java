@@ -61,6 +61,11 @@ public class PropertyAssessmentsApplication extends Application {
     private static GeocodeParameters geocodeParameters;
     private static GraphicsOverlay graphicsOverlay;
     private static LocatorTask locatorTask;
+    private boolean isElemSchoolVisible = false;
+    private boolean isJrSchoolVisible = false;
+    private boolean isSrSchoolVisible = false;
+
+
 
 
 
@@ -325,10 +330,18 @@ public class PropertyAssessmentsApplication extends Application {
         stackPane.setAlignment(schoolButton, Pos.TOP_LEFT);
         //createLocatorTask();
         schoolButton.setOnAction(event -> {
-            try {
-                elemSchoolButtonUsage();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if(!isElemSchoolVisible){
+                try {
+                    elemSchoolButtonUsage();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                isElemSchoolVisible = true;
+            }
+            else {
+                // Remove elementary school graphics
+                graphicsOverlay.getGraphics().removeIf(graphic -> "elem".equals(graphic.getAttributes().get("type")));
+                isElemSchoolVisible = false;
             }
         });
 
@@ -339,10 +352,18 @@ public class PropertyAssessmentsApplication extends Application {
         stackPane.setAlignment(highSchoolButton, Pos.TOP_LEFT);
         createLocatorTask();
         highSchoolButton.setOnAction(event -> {
-            try {
-                highSchoolButtonusage();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if (!isSrSchoolVisible)
+            {
+                try {
+                    highSchoolButtonusage();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                isSrSchoolVisible = true;
+            }
+            else {
+                graphicsOverlay.getGraphics().removeIf(graphic -> "sr".equals(graphic.getAttributes().get("type")));
+                isSrSchoolVisible = false;
             }
         });
 
@@ -353,10 +374,17 @@ public class PropertyAssessmentsApplication extends Application {
         stackPane.setAlignment(jrSchoolButton, Pos.TOP_LEFT);
         createLocatorTask();
         jrSchoolButton.setOnAction(event -> {
-            try {
-                jrSchoolButtonUsage();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if (!isJrSchoolVisible){
+                try {
+                    jrSchoolButtonUsage();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                isJrSchoolVisible = true;
+            }
+            else {
+                graphicsOverlay.getGraphics().removeIf(graphic -> "jr".equals(graphic.getAttributes().get("type")));
+                isJrSchoolVisible = false;
             }
         });
 
@@ -378,21 +406,21 @@ public class PropertyAssessmentsApplication extends Application {
     private void elemSchoolButtonUsage() throws IOException {
         //Put instance for elementary schools here!!!!
         Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv");// replace me
-        String schools = schoolsInstance.getAllCoordinates(); // replace me
+        String schools = schoolsInstance.getElementarySchools().getAllCoordinates(); // replace me
         getPointPlacement(schools, "elem");
     }
 
     private void highSchoolButtonusage() throws IOException {
         //Put instance for High schools here!!!!!
         Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv");//replace me
-        String schools = schoolsInstance.getAllCoordinates(); // replace me
+        String schools = schoolsInstance.getSeniorSchools().getAllCoordinates(); // replace me
         getPointPlacement(schools, "high");
     }
 
     private void jrSchoolButtonUsage() throws IOException {
         //Put instance for jr High schools here!!!!!
         Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv"); //replace me
-        String schools = schoolsInstance.getAllCoordinates(); //replace me
+        String schools = schoolsInstance.getJuniorSchools().getAllCoordinates(); //replace me
         getPointPlacement(schools, "jr");
     }
 
@@ -520,6 +548,7 @@ public class PropertyAssessmentsApplication extends Application {
             String latitude = matcher.group(2);
             Point point = new Point(Double.parseDouble(longitude), Double.parseDouble(latitude), SpatialReference.create(4326));
             Graphic markerGraphic = new Graphic(point, markerSymbol);
+            markerGraphic.getAttributes().put("type", type); // <-- Tagging
             graphicsOverlay.getGraphics().add(markerGraphic);
         }
     }

@@ -10,8 +10,9 @@ public class MainSchool {
 
         try{
             Schools schools = new Schools(filename);
-
-            System.out.println(schools.getAllCoordinates());
+            System.out.println(schools.getAllSchoolTypes());
+            System.out.println(schools.getSeniorSchools());
+            //System.out.println(schools.getAllCoordinates());
             System.out.println("Enter school id: ");
             String targetId = scanner.nextLine();
             if (!targetId.isEmpty()){
@@ -27,8 +28,6 @@ public class MainSchool {
                 }
 
             }
-
-
 
 
         }
