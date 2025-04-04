@@ -287,26 +287,25 @@ public class PropertyAssessmentsApplication extends Application {
 
     private void applyFilters(String filter, NeighbourhoodCatchment neighbourHoodCatchmentByName, PropertyAssessments propertyAssessments, NeighbourhoodCatchments neighbourhoodCatchments) {
         try{
-        // Filter the property assessment data by the filter display on the table and obtain
-        // the Multipolygon value for the neighbourhood and display it on the map
+            // Filter the property assessment data by the filter display on the table and obtain
+            // the Multipolygon value for the neighbourhood and display it on the map
 
-        PropertyAssessments filteredPropertyAssessments = propertyAssessments.getFilteredData(filter);
-        NeighbourhoodCatchment neighbourhoodCatchment = neighbourHoodCatchmentByName;
-        if (neighbourhoodCatchment == null) {
-            throw new NullPointerException("Neighbourhood catchment is null for: " + filter);
-        }
+            PropertyAssessments filteredPropertyAssessments = propertyAssessments.getFilteredData(filter);
+            NeighbourhoodCatchment neighbourhoodCatchment = neighbourHoodCatchmentByName;
+            if (neighbourhoodCatchment == null) {
+                throw new NullPointerException("Neighbourhood catchment is null for: " + filter);
+            }
 
-        Catchment neighbourhoodPolygon = neighbourhoodCatchment.getCatchment();
-        if (neighbourhoodPolygon == null) {
-            throw new NullPointerException("Polygon is null for: " + filter);
-        }
+            Catchment neighbourhoodPolygon = neighbourhoodCatchment.getCatchment();
+            if (neighbourhoodPolygon == null) {
+                throw new NullPointerException("Polygon is null for: " + filter);
+            }
 
-        System.out.println(neighbourhoodPolygon);
-        getEdmontonBounds(String.valueOf(neighbourhoodPolygon));
-        table.getItems().clear();
-        table.getItems().addAll(filteredPropertyAssessments.getData());
-        }
-        catch(Exception e){
+            System.out.println("this is the polygon: " + neighbourhoodPolygon);
+            getEdmontonBounds(String.valueOf(neighbourhoodPolygon));
+            table.getItems().clear();
+            table.getItems().addAll(filteredPropertyAssessments.getData());
+        } catch(Exception e){
             System.err.println("This is our catch and error msg: Error filtering and drawing polygon for neighbourhood: " + filter);
             showError("This neighbourhood does not have an outline for the map");
         }
