@@ -15,11 +15,18 @@ public class Schools {
     private List<School> schools;
     private String filePath;
 
-    // Constructor that takes a list of School Objects
+
+    /**
+     * Constructor for Schools object that takes a list of School Objects
+     * @param schools - list of School Objects
+     * */
     public Schools(List<School> schools) {this.schools = schools;}
 
-    // Constructor that initialize Schools list from a file
-    // Constructor for CSV loading
+    /**
+     * Constructor a Schools object by getting data from an existing School objects.
+     *
+     * @param csvFileName Existing School objects.
+     */
     public Schools(String csvFileName) throws IOException {
         this.schools = new ArrayList<>();
         this.filePath = "src/main/resources/" + csvFileName;
@@ -30,6 +37,7 @@ public class Schools {
             throw new IOException(e.getMessage());
         }
     }
+
     /**
      * Reads the contents of the CSV and creates School objects
      * @param csvFileName - full path to the CSV file
@@ -60,8 +68,9 @@ public class Schools {
             String catchmentPolygon = row[19];
             Catchment catchment = new Catchment(catchmentPolygon);
 
-
+            // Make a School object with all the gathered data
             School school = new School(id, year, name, schoolType, address,catchment, location);
+            // Add the School object to Schools
             schools.add(school);
 
         }
@@ -94,7 +103,8 @@ public class Schools {
                 // Split a line by comma works for simple CSV files
                 String[] values = line.split(",");
 
-                //for multipolygons, if we end up using catchment then we got to switch to this
+                // for multipolygons, if we end up using catchment then we got to switch
+                // this however is very slow so maybe import opencsv or other method
                 //String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
 
@@ -119,6 +129,11 @@ public class Schools {
         return schools.size(); // return size of list
     }
 
+    /**
+     * This method will return a School object by given ID
+     * @param id - string
+     * @return school - School Object
+     */
     public School getSchoolByID(String id){
         for(School school : schools){
             if(school.getId().equals(id)){
@@ -128,26 +143,44 @@ public class Schools {
         return null;
     }
 
+    /**
+     * This method will return a Sting of coordinates for all School objects in Schools
+     * @return coordinates - String containing all coordinates in Schools Objects
+     * */
     public String getAllCoordinates() {
         //ArrayList<String> coordinates = new ArrayList<>();
         String coordinates = "";
+        // loop through each School in Schools
         for (School school : schools) {
+            // get the latitude and longitude using methods from School and Location
             String latitude = school.getLocation().getLatitude();
             String longitude = school.getLocation().getLongitude();
+            // if not null
             if (latitude != null && longitude != null && !latitude.isEmpty() && !longitude.isEmpty()) {
                 //coordinates.add("(" + latitude + " " + longitude + ")");
+
+                // Add coordinates to list following this format
                 coordinates += latitude + " " + longitude + ", ";
             }
         }
-        System.out.println(coordinates);
+        // DEBUG to check if coordinates are being returned
+        //System.out.println(coordinates);
         return coordinates;
     }
 
+    /**
+     * This method will get all School object types in Schools
+     * @return types - list of school types
+     * */
     public List<String> getAllSchoolTypes() {
+        // Initialize an empty list for the target neighbourhood
         List<String> types = new ArrayList<>();
+        // Loop through each School in Schools
         for (School school : schools) {
-            if (school.getSchoolType() != null &&
-                    school.getSchoolType().getType() != null &&
+            // SchoolType is an object that's in School that contains type and grades
+            // If type is not null and not in list types then add to list
+            if (school.getSchoolType() != null
+                    && school.getSchoolType().getType() != null &&
                     !types.contains(school.getSchoolType().getType())) {
                 types.add(school.getSchoolType().getType());
             }
@@ -156,55 +189,93 @@ public class Schools {
     }
 
 
-
+    /**
+     * This method will get School objects by a specfic type
+     * @param partialType - string with partial type letters
+     * @return Schools - Schools object with that type
+     * */
     public Schools getSchoolsByType(String partialType) {
+        // Initialize an empty list for the School objects
         List<School> result = new ArrayList<>();
+        // Loop through each School in Schools
         for (School school : schools) {
+            // if the SchoolType is not null and type is not null
+            // then add school to list
             if (school.getSchoolType() != null &&
                     school.getSchoolType().getType() != null &&
                     school.getSchoolType().getType().toLowerCase().contains(partialType.toLowerCase())) {
                 result.add(school);
             }
         }
+        // Create new Schools object with the list of School objects
         return new Schools(result);
     }
 
-
+    /**
+     * This method will get School objects by a specfic grade
+     * @param grade - string for grades
+     * @return Schools - Schools object with that grade
+     * */
     public Schools getSchoolsByGrade(String grade) {
+        // Initialize an empty list for the School objects
         List<School> result = new ArrayList<>();
+        // Loop through each School in Schools
         for (School school : schools) {
+            // if the SchoolType is not null and grade is not null
+            // then add school to list
             if (school.getSchoolType() != null &&
                     school.getSchoolType().getGrades() != null &&
                     school.getSchoolType().getGrades().toLowerCase().contains(grade.toLowerCase())) {
                 result.add(school);
             }
         }
+        // Create new Schools object with the list of School objects
         return new Schools(result);
     }
 
+    /**
+     * This method will return Schools object containing all Elementary School objects
+     * @return Schools - All elementary school objects
+     * */
     public Schools getElementarySchools() {
+        // In the dataset anything that has an E is elementary [EL, EJ, EJS]
         return getSchoolsByType("E");
     }
 
+    /**
+     * This method will return Schools object containing all Junior High School objects
+     * @return Schools - All junior high school objects
+     * */
     public Schools getJuniorSchools() {
+        // In the dataset anything that has a J is Junior high [JR, EJ, EJS]
         return getSchoolsByType("J");
     }
 
+    /**
+     * This method will return Schools object containing all Senior High School objects
+     * @return Schools - All senior high school objects
+     * */
     public Schools getSeniorSchools() {
+        // Initialize an empty list for the School objects
         List<School> result = new ArrayList<>();
+        // Loop through each School in Schools
         for (School school : schools) {
+            // get type for each school
             String type = school.getSchoolType().getType().toUpperCase();
+            // if type has an S and does not have a P then add to list
             if (type.contains("S") && !type.contains("P")) {
+                // in the data set all senior highs have an S but there is another type SP
+                // which aren't general senior high schools there special programs with ranging grades
                 result.add(school);
             }
         }
+        // Return Schools object with Senior high School objects
         return new Schools(result);
     }
 
-
-
-
-
+    /**
+     * toSting method for Schools
+     * */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
