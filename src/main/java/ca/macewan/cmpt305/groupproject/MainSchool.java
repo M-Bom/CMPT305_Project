@@ -2,6 +2,10 @@ package ca.macewan.cmpt305.groupproject;
 
 import java.util.Scanner;
 
+/**
+ * This main is just to test Schools and Parks Methods
+ * Can delete if you like at end
+ * */
 public class MainSchool {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);

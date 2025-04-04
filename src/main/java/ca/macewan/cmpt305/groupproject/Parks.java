@@ -12,12 +12,19 @@ public class Parks {
     private List<Park> parks;
     private String filePath;
 
+    /**
+     * Constructor for Parks object that takes a list of Park Objects
+     * @param parks - list of Park Objects
+     * */
     public Parks(List<Park> parks) {
         this.parks = parks;
     }
 
-    // Constructor that initialize Schools list from a file
-    // Constructor for CSV loading
+    /**
+     * Constructor a Parks object by getting data from an existing Park objects.
+     *
+     * @param csvFileName Existing Park objects.
+     */
     public Parks(String csvFileName) throws IOException {
         this.parks = new ArrayList<>();
         this.filePath = "src/main/resources/" + csvFileName;
@@ -28,8 +35,9 @@ public class Parks {
             throw new IOException(e.getMessage());
         }
     }
+
     /**
-     * Reads the contents of the CSV and creates School objects
+     * Reads the contents of the CSV and creates Park objects
      * @param csvFileName - full path to the CSV file
      * @throws IOException - if there's a read error
      */
@@ -109,18 +117,27 @@ public class Parks {
         return Arrays.copyOf(data, index);
     }
 
+    /**
+     * This method will return a Sting of coordinates for all Park objects in Parks
+     * @return coordinates - String containing all coordinates in Schools Objects
+     */
     public String getAllCoordinates() {
         //ArrayList<String> coordinates = new ArrayList<>();
         String coordinates = "";
+        // Loop through each Park in Parks
         for (Park park : parks) {
+            // get the latitude and longitude for that Park
             String latitude = park.getLocation().getLatitude();
             String longitude = park.getLocation().getLongitude();
+            // If not null add them to the coordinates string
             if (latitude != null && longitude != null && !latitude.isEmpty() && !longitude.isEmpty()) {
                 //coordinates.add("(" + latitude + " " + longitude + ")");
                 coordinates += latitude + " " + longitude + ",";
             }
         }
-        System.out.println(coordinates);
+
+        //System.out.println(coordinates);
+        // long string of coordinates for each Park in Parks
         return coordinates;
     }
 
