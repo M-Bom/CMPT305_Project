@@ -88,6 +88,13 @@ public class PropertyAssessments {
         return new PropertyAssessments(filteredData);
     }
 
+    /**
+     * Checks to see if the assessed value is within the filters range.
+     *
+     * @param assessedValue assessed value of property.
+     * @param filterName Filter criterion.
+     * @return Ture if the assessed value is within one of the range cases otherwise false.
+     */
     private boolean withinPriceRange(int assessedValue, String filterName) {
         return switch (filterName) {
             case "0 - 99,999" -> assessedValue >= 0 && assessedValue <= 99999;
@@ -178,12 +185,22 @@ public class PropertyAssessments {
         return assessedValues;
     }
 
+    /**
+     * Get all the neighbourhoods within the property assessments and make sure there are no duplicates
+     *
+     * @return new ArrayList<>(neighbourhoods) - list of neighbourhoods
+     */
     public List<Neighbourhood> getAllNeighbourhoods() {
         Set<Neighbourhood> neighbourhoods = this.data.stream().map(PropertyAssessment::getNeighbourhood).collect(Collectors.toSet());
-        //System.out.println(neighbourhoods.size());
         return new ArrayList<>(neighbourhoods);
     }
 
+    /**
+     * Sort the neighbourhoods in alphabetical order
+     *
+     * @param neighbourhoods - list of neighbourhoods
+     * @return sortedNeighbourhoods - list of neighbourhoods in alphabetical order
+     */
     public List<Neighbourhood> getNeighbourhoodsInAlphabeticalOrder(List<Neighbourhood> neighbourhoods) {
         List<Neighbourhood> sortedNeighbourhoods =  new ArrayList<>(neighbourhoods);
         sortedNeighbourhoods.sort(Comparator.comparing(Neighbourhood::getNeighbourhoodName));
