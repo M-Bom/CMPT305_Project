@@ -6,54 +6,19 @@ import java.io.IOException;
 public class ChatBot {
     private PropertyAssessments propertyAssessments;
     private Schools schools;
-    private NeighbourhoodCatchments neighbourhoodCatchments;
 
     // Constructor initializes property assessments and schools from CSV files
-    public ChatBot(String propertyCsvFileName, String schoolCsvFileName, String neighCsvFile) throws IOException {
+    public ChatBot(String propertyCsvFileName, String schoolCsvFileName) throws IOException {
         this.propertyAssessments = new PropertyAssessments(propertyCsvFileName);
         this.schools = new Schools(schoolCsvFileName);
-        this.neighbourhoodCatchments = new NeighbourhoodCatchments(neighCsvFile);
     }
 
-    public void start() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Welcome to the ChatBot! Type 'exit' to quit or 'help' to see available commands.");
-
-        while (true) {
-            System.out.print("Ask a question: ");
-            String input = scanner.nextLine().trim();
-
-            if (input.equalsIgnoreCase("exit")) {
-                System.out.println("Goodbye!");
-                break;
-            }
-            if (input.equalsIgnoreCase("help")) {
-                showHelp();
-                continue;
-            }
-
-            String response = handleQuery(input);
-            System.out.println(response);
-        }
-        scanner.close();
-    }
-
-    public void showHelp() {
-        System.out.println("Here are some things you can ask me:");
-        System.out.println("- property assessment for [ID]");
-        System.out.println("- filter by [criteria]");
-        System.out.println("- mean assessment value");
-        System.out.println("- median assessment value");
-        System.out.println("- total number of properties");
-        System.out.println("- list all neighbourhoods");
-        System.out.println("- neighbourhood details for [NAME]");
-        System.out.println("- location for property [ID]");
-        System.out.println("- assessment class for property [ID]");
-        System.out.println("- total number of schools");
-        System.out.println("- school details for [ID]");
-        System.out.println("- exit to leave the application");
-    }
-
+    /**
+     * this method gives available commands to the chatbot which is used to handle inputs from the
+     * user. This allows the user to interact with the chatbot and get information back from it
+     * @param input
+     * @return a String
+     */
     public String handleQuery(String input) {
         String lowerInput = input.toLowerCase();
 
@@ -116,23 +81,7 @@ public class ChatBot {
 
             return (school != null) ? school.toString() : "No school found with that ID.";
         }
-        if (lowerInput.contains("Neighbourhood details")) {
-
-        }
 
         return "I'm sorry, I don't understand that question.";
-    }
-
-    public static void main(String[] args) {
-        try {
-            ChatBot chatBot = new ChatBot(
-                    "src/main/resources/Property_Assessment_Data_2024.csv",
-                    "Edmonton_Public_School_Board.csv",
-                    "Edmonton_Neighbourhoods.csv"
-            );
-            chatBot.start();
-        } catch (IOException e) {
-            System.err.println("Error loading data: " + e.getMessage());
-        }
     }
 }

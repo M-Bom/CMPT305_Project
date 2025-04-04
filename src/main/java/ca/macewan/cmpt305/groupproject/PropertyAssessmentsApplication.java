@@ -73,8 +73,7 @@ public class PropertyAssessmentsApplication extends Application {
         try {
             chatBot = new ChatBot(
                     "src/main/resources/Property_Assessment_Data_2024.csv",
-                    "Edmonton_Public_School_Board.csv",
-                    "Edmonton_Neighbourhoods.csv"
+                    "Edmonton_Public_School_Board.csv"
             );
         } catch (IOException e) {
             showError("Error loading data: " + e.getMessage());
@@ -126,6 +125,7 @@ public class PropertyAssessmentsApplication extends Application {
 
         // **Add chat layout to the right side of the BorderPane**
         bp.setRight(chatLayout);
+        chatArea.appendText("Type 'help' for chatbot commands or 'exit' to close the program. \n");
 
         //set map in right side of application
         StackPane stackPane = createMap();
@@ -311,6 +311,11 @@ public class PropertyAssessmentsApplication extends Application {
         }
     }
 
+    /**
+     * this method calls the handleQuery method from the ChatBot class. It also gives the user the
+     * ability to ask the chatbot for help. When the user inputs help into the chatbot the program
+     * will return a list of commands available for the user to implement
+     */
     private void handleUserInput() {
         String userInput = inputField.getText().trim();
         if (userInput.isEmpty()) return;
