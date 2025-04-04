@@ -131,6 +131,7 @@ public class PropertyAssessmentsApplication extends Application {
         StackPane stackPane = createMap();
         bp.setCenter(stackPane);
 
+        //create buttons within map feature
         createButtons(stackPane);
 
         // Call the onSearch method and to search the data using the filters when pressing the button
@@ -334,24 +335,24 @@ public class PropertyAssessmentsApplication extends Application {
         inputField.clear();
     }
 
-//map functions start
-
     public StackPane createMap() throws FileNotFoundException {
         StackPane stackPane = new StackPane();
-        //arcgis key
+        //collect arcgis key from external text file
         try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/ArcGIS_ApiKey"))) {
             String key;
             key = reader.readLine();
             ArcGISRuntimeEnvironment.setApiKey((String) key);
 
-            //ArcGISRuntimeEnvironment.setApiKey("AAPT85fOqywZsicJupSmVSCGrmw17cs_rcl0BcRxYYPXDQIEDYKLWF6hpVqlEGU8ImN9k2U8H9E-GP50Hk8Q4xYd5EPPiCoN9Z9giRHe-DOTplphIwMlkuJfMeVxZTInrxQRUk3mlrjVDRUPu8-Crn875qcQfF_SWo7P4kM1QsthL_F_-VXzLHmgczeyGhjaMlYdTS9rcSZvxTasQN3hLX8H9inAOXaOdMhZxCdxMeYSgpI.AT2_s86nj1rq");
+            //create new map view within map stackPane with a topographic basemap
             mapView = new MapView();
             stackPane.getChildren().add(mapView);
-            //set to topographic map for basemap to be able to see plain map
             ArcGISMap map = new ArcGISMap(BasemapStyle.ARCGIS_TOPOGRAPHIC);
             mapView.setMap(map);
+
             //set viewpoint to edmonton coordinates
             mapView.setViewpoint(new Viewpoint(53.5461, -113.4937, 360000));
+
+            //create new alterable graphics overlay to map for points to be added
             graphicsOverlay = new GraphicsOverlay();
             mapView.getGraphicsOverlays().add(graphicsOverlay);
             graphicsOverlay.getGraphics().clear();
@@ -362,31 +363,17 @@ public class PropertyAssessmentsApplication extends Application {
         }
     }
 
-    // no longer using text box search
-    private void setupTextField() {
-        searchBox = new TextField();
-        searchBox.setMaxWidth(300);
-        searchBox.setPromptText("Search");
-        StackPane.setAlignment(searchBox, Pos.TOP_LEFT);
-        StackPane.setMargin(searchBox, new Insets(10, 0,0, 10));
-        createLocatorTask();
-        searchBox.setOnAction(event -> {
-            String text = searchBox.getText();
-            if(!text.isEmpty()){
-                //graphicsOverlay.getGraphics().clear(); // clears the overlay of any previous result
-                //performGeocode(text, "address");
-            }
-        });
-    }
-
     private void createButtons(StackPane stackPane){
-        //create schools button
+        //button to show all Elementary schools in Edmonton
         Button schoolButton = new Button("Elementary School");
-        StackPane.setMargin(schoolButton, new Insets(0, 0, 0, 10) );
         schoolButton.setStyle("-fx-background-color: #649aef; -fx-background-size: 20px 40px");
+
+        // add button to the map stackPane in the top left slightly right of margin between map and table
         stackPane.getChildren().add(schoolButton);
+        StackPane.setMargin(schoolButton, new Insets(0, 0, 0, 10) );
         stackPane.setAlignment(schoolButton, Pos.TOP_LEFT);
-        //createLocatorTask();
+
+        //when Elementary School button pressed by user
         schoolButton.setOnAction(event -> {
             if(!isElemSchoolVisible){
                 try {
@@ -403,12 +390,16 @@ public class PropertyAssessmentsApplication extends Application {
             }
         });
 
+        //button for showing all High Schools in Edmonton
         Button highSchoolButton = new Button("High School");
-        StackPane.setMargin(highSchoolButton, new Insets(60, 0, 0, 10) );
         highSchoolButton.setStyle("-fx-background-color: #c571f6; -fx-background-size: 20px 50px");
+
+        // add button to the map stackPane in the top left slightly right of margin between map and table
         stackPane.getChildren().add(highSchoolButton);
+        StackPane.setMargin(highSchoolButton, new Insets(60, 0, 0, 10) );
         stackPane.setAlignment(highSchoolButton, Pos.TOP_LEFT);
-        createLocatorTask();
+
+        //when High School button is pressed by user
         highSchoolButton.setOnAction(event -> {
             if (!isSrSchoolVisible)
             {
@@ -420,17 +411,22 @@ public class PropertyAssessmentsApplication extends Application {
                 isSrSchoolVisible = true;
             }
             else {
+                // Remove High School graphics
                 graphicsOverlay.getGraphics().removeIf(graphic -> "high".equals(graphic.getAttributes().get("type")));
                 isSrSchoolVisible = false;
             }
         });
 
+        //button for showing all Jr. High Schools in Edmonton
         Button jrSchoolButton = new Button("Jr. High School");
-        StackPane.setMargin(jrSchoolButton, new Insets(30, 0, 0, 10) );
         jrSchoolButton.setStyle("-fx-background-color: #f3914d; -fx-background-size: 20px 40px");
+
+        // add button to the map stackPane in the top left slightly right of margin between map and table
         stackPane.getChildren().add(jrSchoolButton);
+        StackPane.setMargin(jrSchoolButton, new Insets(30, 0, 0, 10) );
         stackPane.setAlignment(jrSchoolButton, Pos.TOP_LEFT);
-        createLocatorTask();
+
+        //when Jr. High button is pressed by user
         jrSchoolButton.setOnAction(event -> {
             if (!isJrSchoolVisible){
                 try {
@@ -446,12 +442,16 @@ public class PropertyAssessmentsApplication extends Application {
             }
         });
 
+        //button for showing all parks and playgrounds in Edmonton
         Button parksButton = new Button("parks");
-        StackPane.setMargin(parksButton, new Insets(90, 0, 0, 10) );
         parksButton.setStyle("-fx-background-color: #7cf34d; -fx-background-size: 20px 40px");
+
+        // add button to the map stackPane in the top left slightly right of margin between map and table
         stackPane.getChildren().add(parksButton);
+        StackPane.setMargin(parksButton, new Insets(90, 0, 0, 10) );
         stackPane.setAlignment(parksButton, Pos.TOP_LEFT);
-        createLocatorTask();
+
+        //when parks button is pressed by user
         parksButton.setOnAction(event -> {
             if(!isParkVisible){
 
@@ -470,127 +470,60 @@ public class PropertyAssessmentsApplication extends Application {
     }
 
     private void elemSchoolButtonUsage() throws IOException {
-        //Put instance for elementary schools here!!!!
-        Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv");// replace me
-        String schools = schoolsInstance.getElementarySchools().getAllCoordinates(); // replace me
+        //collect all points of relevant elementary schools in edmonton and send to be printed
+        Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv");
+        String schools = schoolsInstance.getElementarySchools().getAllCoordinates();
         getPointPlacement(schools, "elem");
     }
 
     private void highSchoolButtonusage() throws IOException {
-        //Put instance for High schools here!!!!!
-        Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv");//replace me
-        String schools = schoolsInstance.getSeniorSchools().getAllCoordinates(); // replace me
+        //collect all points of relevant high schools in edmonton and send to be printed
+        Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv");
+        String schools = schoolsInstance.getSeniorSchools().getAllCoordinates(); //
         getPointPlacement(schools, "high");
     }
 
     private void jrSchoolButtonUsage() throws IOException {
-        //Put instance for jr High schools here!!!!!
-        Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv"); //replace me
-        String schools = schoolsInstance.getJuniorSchools().getAllCoordinates(); //replace me
+        //collect all points of relevant jr. high schools in edmonton and send to be printed
+        Schools schoolsInstance = new Schools("Edmonton_Public_School_Board.csv");
+        String schools = schoolsInstance.getJuniorSchools().getAllCoordinates();
         getPointPlacement(schools, "jr");
     }
 
     private void parksButtonUsage() throws IOException {
-        //add parks instance here!!!!
+        //collect all points of relevant parks in edmonton and send to be printed
         Parks parksInstance = new Parks("Parks_20250326.csv");
         String parks = parksInstance.getAllCoordinates();
         getPointPlacement(parks, "park");
     }
 
-    //this is not working
-    public void createLocatorTask() {
-        locatorTask = new LocatorTask("https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer");
-        geocodeParameters = new GeocodeParameters();
-        geocodeParameters.getResultAttributeNames().add("*");
-        geocodeParameters.setMaxResults(10);
-        geocodeParameters.setOutputSpatialReference(mapView.getSpatialReference());
-    }
-
-    // this is not working
-    private void performGeocode(String address, String type) {
-        if(address.equalsIgnoreCase("Edmonton")){
-            //getEdmontonBounds();
-            return;
-        }
-        address = address + " Edmonton";
-        ListenableFuture<List<GeocodeResult>> geocodeResults = locatorTask.geocodeAsync(address, geocodeParameters);
-        geocodeResults.addDoneListener(() ->{
-            try{
-                List<GeocodeResult> geocodes = geocodeResults.get();
-                if (geocodes.size() > 0) {
-                    GeocodeResult result = geocodes.get(0);
-                    //graphicsOverlay.getGraphics().clear(); // clears the overlay of any previous result
-                    displayResult(result, type);
-                } else {
-                    new Alert(Alert.AlertType.INFORMATION, "No results found.").show();
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                new Alert(Alert.AlertType.ERROR, "Error getting result.").show();
-                e.printStackTrace();
-            }
-        });
-    }
-
-    //this is not working
-    private void displayResult(GeocodeResult geocodeResult, String type) {
-        Color c = null;
-        if (type.equals("address")) {
-            c = Color.RED;
-        } else if (type.equals("park")) {
-            c = Color.GREEN;
-        } else if (type.equals("school")) {
-            c = Color.BLUE;
-        }
-
-        SimpleMarkerSymbol markerSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, c, 6.0f);
-        Graphic markerGraphic = new Graphic(geocodeResult.getDisplayLocation(), geocodeResult.getAttributes(), markerSymbol);
-        graphicsOverlay.getGraphics().add(markerGraphic);
-
-        if(type.equals("address")){
-            mapView.setViewpointCenterAsync(geocodeResult.getDisplayLocation());
-        }
-    }
-
     private void getEdmontonBounds(String multiPolygon) {
-        //List<List<String>> edmontonCoord = new ArrayList<>();
-//        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/City_of_Edmonton_-_Corporate_Boundary__current__20250325.csv"))) {
-//            String line;
-//            //skip header
-//            reader.readLine();
-//            line = reader.readLine();
-//            if (line == null) {
-//                throw new RuntimeException("CSV file does not contain Edmonton boundary");
-//            }
-//            String edmontonBoundary = line.split(",")[0];
-//            if (!edmontonBoundary.startsWith("\"MULTIPOLYGON")){
-//                throw new RuntimeException("Invalid format, CSV file does not contain Edmonton boundary");
-//            }
+        //set style for outline and fill colour of multipolygon
         SimpleLineSymbol simpleLineSymbol1 = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.BLACK, 2);
+        SimpleFillSymbol simpleFillSymbol = new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, Color.web("#32A4A8", .5), simpleLineSymbol1);
+
+        //point collection for all added points within multipolygon string
         PointCollection pointCollection = new PointCollection(SpatialReference.create(4326));
 
         //pattern matcher to separate the longitude and latitude from the multipolygon string
         Pattern pattern = Pattern.compile("(-?[0-9]+\\.[0-9]+)\\s([0-9]+\\.[0-9]+)");
         Matcher matcher = pattern.matcher(multiPolygon);
-        // Find and parse the coordinates
+
+        //take seperated longitude and latitude as a new point and add to the point collection
         while (matcher.find()) {
-            String longitude = matcher.group(1); // x-coordinate
-            String latitude = matcher.group(2); // y-coordinate
+            String longitude = matcher.group(1);
+            String latitude = matcher.group(2);
             pointCollection.add(new Point(Double.parseDouble(longitude), Double.parseDouble(latitude)));
-            //System.out.println(longitude);
         }
 
-        SimpleFillSymbol simpleFillSymbol = new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, Color.web("#32A4A8", .5), simpleLineSymbol1);
+        //create polygon from collected point collection and send it to the map graphics overlay
         Polygon polygon = new Polygon(pointCollection);
         Graphic polygonGraphic = new Graphic(polygon, simpleFillSymbol);
         graphicsOverlay.getGraphics().add(polygonGraphic);
-
-
-//        } catch (IOException e) {
-//            throw new RuntimeException("Error reading Edmonton boundary", e);
-//        }
     }
 
     private void getPointPlacement(String locations, String type) {
+        //set color for differentiation of point type
         Color c = null;
         if (type.equals("address")) {
             c = Color.RED;
@@ -604,11 +537,14 @@ public class PropertyAssessmentsApplication extends Application {
             c = Color.GREEN;
         }
 
+        //setting style for marker drawing of singular point
         SimpleMarkerSymbol markerSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, c, 5);
 
+        //pattern matcher to separate latitude and longitude from a string of independent points
         Pattern pattern = Pattern.compile("(-?[0-9]+\\.[0-9]+)\\s([0-9]+\\.[0-9]+)");
         Matcher matcher = pattern.matcher(locations);
 
+        //take separate latitude and longitude points and send to graphics overlay for each point independently
         while (matcher.find()) {
             String longitude = matcher.group(1);
             String latitude = matcher.group(2);
@@ -618,9 +554,6 @@ public class PropertyAssessmentsApplication extends Application {
             graphicsOverlay.getGraphics().add(markerGraphic);
         }
     }
-
-//map functions end
-
 
     void onReset(VBox vb, PropertyAssessments propertyAssessments) {
         // retrieve neighbourhoodFilter from vertical box
